@@ -6,6 +6,16 @@ Aplicacion con el fin de leer el puerto serial (RS232) de una balanza, sus datos
 
 El objetivo es crear un contenedor en docker que encapsule la aplicacion y este activo siempre desde el inicio del computador o equipo donde se encuentre alojado. El contenedor es linux debian y nodejs, tambien las respectivas librerias que abriran el puerto serial o usb.
 
+## Api
+
+```bash
+# Lectura del api, mediante el comando GET
+  http:[IP]:[puerto]/read
+
+  http://172.1.1.0:4001/read
+
+```
+
 ## Archivo .env
 
 ```bash

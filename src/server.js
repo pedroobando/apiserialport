@@ -27,16 +27,12 @@ const lecturaPuerto = puertoSerial.pipe(new readLineSerial());
 try {
   lecturaPuerto.on('open', onOpenPort);
   lecturaPuerto.on('data', onData);
-  // lecturaPuerto.on('error', (err) => {
-  //   console.log(`Error: - ${err.message}`);
-  // });
 } catch (error) {
   console.error(`Error lectura ${error}, Equipo: ${portName}, baudRate: ${baudRate}`);
 }
 
 function onOpenPort() {
   try {
-    console.log('open');
     console.log(`Puerto conectado: ${portName}`);
   } catch (error) {
     console.error(`error apertura ${error}`);
@@ -59,8 +55,6 @@ function onData(data) {
     let reciveData = data.toString();
     reciveData = reciveData.replace(/(\r\n|\n|\r|\=)/gm, '');
 
-    // console.log(reciveData);
-
     if (reciveData.slice(-2) === 'KG') {
       valorPeso = reciveData;
     }
@@ -72,9 +66,6 @@ function onData(data) {
       serve.locals.sendData = sendData;
       console.log(sendData);
     }
-
-    // }
-    // io.emit('sendTara', sendData);
   } catch (error) {
     console.error(error);
   }
@@ -85,11 +76,5 @@ function pad(num, size) {
   while (s.length < size) s = '0' + s;
   return s;
 }
-
-// io.on('connection', (socket) => {
-//   if (process.env.AMBIENT == 'DEV') {
-//     console.log('Usuario Conectado');
-//   }
-// });
 
 module.exports = { serve, thePort };
