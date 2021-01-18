@@ -48,21 +48,33 @@
           <form class="ui fluid form" action="/configport" method="POST">
             <div class="inline field">
               <div class="ui right pointing label">Indique el puerto</div>
-              <input type="text" name="BALANZAPORTCOM" placeholder="Puerto / PORT" />
+              <input
+                id="BALANZAPORTCOM"
+                type="text"
+                name="BALANZAPORTCOM"
+                placeholder="Puerto / PORT"
+              />
             </div>
             <div class="inline field">
               <div class="ui right pointing label">Indique la velocidad</div>
-              <input type="text" name="BALANZABAUDIOS" placeholder="Puerto / PORT" />
+              <input
+                id="BALANZABAUDIOS"
+                type="text"
+                name="BALANZABAUDIOS"
+                placeholder="Puerto / PORT"
+              />
             </div>
             <div class="ui divider"></div>
             <div class="inline field">
               <div class="ui right pointing label">Puerto servidor Web</div>
               <input
+                id="PORTHTTP"
                 type="text"
                 name="PORTHTTP"
                 placeholder="8081 / 8088 / 3000 / 4000 ..."
               />
             </div>
+            <h1 id="Header"></h1>
 
             <button type="submit" class="ui positive basic button">Enviar</button>
             <button class="ui button">Cancelar</button>
@@ -78,6 +90,8 @@
         </div>
       </div>
     </main>
-    <script src="./js/semantic.js" type="javascript"></script>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/semantic.js"></script>
+    <script src="./js/leervalor.js"></script>
   </body>
 </html>

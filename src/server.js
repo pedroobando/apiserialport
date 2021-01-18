@@ -1,5 +1,4 @@
 const express = require('express');
-// const { json } = require('express');
 const fs = require('fs-extra');
 const bodyParser = require('body-parser');
 const serialPort = require('serialport');
@@ -20,7 +19,6 @@ const thePort = process.env.PORT || 8080;
 const rutaRaizStatic = path.join(__dirname, './html');
 
 serve.use(cors());
-// serve.use(json());
 serve.use(bodyParser.json());
 serve.use(bodyParser.urlencoded({ extended: true }));
 
@@ -114,13 +112,24 @@ serve.get('/read', async (req, res) => {
 });
 
 serve.post('/configport', (req, res) => {
-  const { port, baudios } = req.body;
-
   try {
-    // fs.writeJSON('config.json', req.body);
-    // console.log(req.body);
-    readWiteDataConfig('config.json', req.body);
+    writeDataConfig('config.json', req.body);
     res.status(200).json(req.body);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+serve.get('/config.json', (req, res) => {
+  try {
+    fs.readJson('config.json')
+      .catch((err) => {
+        const readDataNew = writeDataConfig('config.json', { 'nuevo': true });
+        res.status(200).json(readDataNew);
+      })
+      .then((resultado) => {
+        res.status(200).json(resultado);
+      });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -132,19 +141,10 @@ serve.use(function (req, res, next) {
   res.status(404).send('Lo siento no encuentro la ruta..!');
 });
 
-const readWiteDataConfig = (fileConfig, settingConfig) => {
+const writeDataConfig = (fileConfig, settingConfig) => {
   try {
-    fs.readJson(fileConfig)
-      .then((fileJson) => {
-        fs.writeJson(fileConfig, dataConfig(settingConfig));
-        console.log(fileJson);
-      })
-      .catch((err) => {
-        console.error(`Error Lectura: ${err}`);
-        fs.writeJson(fileConfig, dataConfig(settingConfig));
-      });
-
-    // console.log(`Leyendo ${_xvar}`);
+    fs.writeJsonSync(fileConfig, dataConfig(settingConfig));
+    return fs.readJsonSync(fileConfig);
   } catch (error) {
     console.log(`Error: ${error}`);
   }
@@ -152,11 +152,11 @@ const readWiteDataConfig = (fileConfig, settingConfig) => {
 
 const dataConfig = (valueEnt) => {
   return {
-    PORTHTTP: valueEnt.PORTHTTP === undefined ? 8081 : parseInt(valueEnt.PORTHTTP, 10),
+    PORTHTTP: valueEnt.PORTHTTP === undefined ? 3000 : parseInt(valueEnt.PORTHTTP, 10),
     BALANZAPORTCOM:
       valueEnt.BALANZAPORTCOM === undefined ? 'COM1' : valueEnt.BALANZAPORTCOM,
     BALANZABAUDIOS:
-      valueEnt.BALANZABAUDIOS === undefined ? 9600 : parseInt(valueEnt.BALANZABAUDIOS),
+      valueEnt.BALANZABAUDIOS === undefined ? 1200 : parseInt(valueEnt.BALANZABAUDIOS),
   };
 };
 
