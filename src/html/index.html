@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/semantic.css" />
+    <title>[SerialPort]</title>
+  </head>
+  <body>
+    <nav class="ui menu">
+      <div class="ui container">
+        <div class="header item">Tomas Company</div>
+        <a class="item"> Inicio </a>
+        <a class="item"> Configuracion </a>
+        <a class="item"> Consola </a>
+      </div>
+    </nav>
+
+    <main>
+      <div class="ui container" style="margin-top: 05px">
+        <div class="ui segment">
+          <h3 class="ui header">SerialPort</h3>
+          <p>
+            Es un pluging cuya funciones leer el puerto serial del la balanza DIGI -
+            modelo DS-781/782(RS). Y emitirlo por via web mediante http, indicandole la
+            ruta y el puerto de salida de la peticion.
+          </p>
+
+          <p>
+            La balanza, tiene que ser configurada para transmitir data continua (Standard
+            Stream). Con la finalidad que traiga solamente el valor del peso.
+          </p>
+
+          <h4 class="ui header">Pasos a seguir.</h4>
+          <div class="ui bulleted list">
+            <div class="item">Balanza en modo Stream</div>
+            <div class="item">Indicar puerto de comunicacion (COM1, COM2, ...)</div>
+            <div class="item">
+              Indicar velocidad transmicion / Baudios (2400, 9600, ...)
+            </div>
+            <div class="item">Aceptar los cambios [GUARDAR]</div>
+            <div class="item">Reinciar el servicio [Reiniciar]</div>
+          </div>
+        </div>
+
+        <div class="ui segment">
+          <div class="ui header">Configuracion</div>
+          <p>Indique el puerto de Configuracion</p>
+
+          <form class="ui fluid form" action="/configport" method="POST">
+            <span class="inline field">
+              <div class="ui right pointing label">Indique el puerto</div>
+              <input type="text" name="port" placeholder="Puerto / PORT" />
+            </span>
+            <span class="inline field">
+              <div class="ui right pointing label">Indique la velocidad</div>
+              <input type="text" name="baudios" placeholder="Puerto / PORT" />
+            </span>
+
+            <button type="submit" class="ui positive basic button">Enviar</button>
+            <button class="ui button">Cancelar</button>
+          </form>
+
+          <div class="ui divider"></div>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias aperiam
+            reprehenderit labore architecto officiis temporibus aliquid deserunt
+            voluptate, ad magni, in omnis officia dignissimos perspiciatis iste nisi
+            facere dolor cupiditate.
+          </p>
+        </div>
+      </div>
+    </main>
+    <script src="./js/semantic.js" type="javascript"></script>
+  </body>
+</html>
