@@ -11,8 +11,6 @@
       <div class="ui container">
         <div class="header item">Tomas Company</div>
         <a class="item"> Inicio </a>
-        <a class="item"> Configuracion </a>
-        <a class="item"> Consola </a>
       </div>
     </nav>
 
@@ -48,14 +46,23 @@
           <p>Indique el puerto de Configuracion</p>
 
           <form class="ui fluid form" action="/configport" method="POST">
-            <span class="inline field">
+            <div class="inline field">
               <div class="ui right pointing label">Indique el puerto</div>
-              <input type="text" name="port" placeholder="Puerto / PORT" />
-            </span>
-            <span class="inline field">
+              <input type="text" name="BALANZAPORTCOM" placeholder="Puerto / PORT" />
+            </div>
+            <div class="inline field">
               <div class="ui right pointing label">Indique la velocidad</div>
-              <input type="text" name="baudios" placeholder="Puerto / PORT" />
-            </span>
+              <input type="text" name="BALANZABAUDIOS" placeholder="Puerto / PORT" />
+            </div>
+            <div class="ui divider"></div>
+            <div class="inline field">
+              <div class="ui right pointing label">Puerto servidor Web</div>
+              <input
+                type="text"
+                name="PORTHTTP"
+                placeholder="8081 / 8088 / 3000 / 4000 ..."
+              />
+            </div>
 
             <button type="submit" class="ui positive basic button">Enviar</button>
             <button class="ui button">Cancelar</button>

@@ -117,9 +117,9 @@ serve.post('/configport', (req, res) => {
   const { port, baudios } = req.body;
 
   try {
-    fs.writeJSON('config.json', req.body);
+    // fs.writeJSON('config.json', req.body);
     // console.log(req.body);
-    readWiteDataConfig('config.json');
+    readWiteDataConfig('config.json', req.body);
     res.status(200).json(req.body);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -132,19 +132,16 @@ serve.use(function (req, res, next) {
   res.status(404).send('Lo siento no encuentro la ruta..!');
 });
 
-const readWiteDataConfig = (fileConfig) => {
-  let _xvar = 'undefined';
+const readWiteDataConfig = (fileConfig, settingConfig) => {
   try {
     fs.readJson(fileConfig)
       .then((fileJson) => {
-        _xvar = dataConfig(fileJson);
-        fs.writeJsonSync(fileJson, _xvar);
-        // console.log(_xvar);
-        // _xvar = fileJson;
+        fs.writeJson(fileConfig, dataConfig(settingConfig));
+        console.log(fileJson);
       })
       .catch((err) => {
         console.error(`Error Lectura: ${err}`);
-        fs.writeJsonSync(fileJson, dataConfig({ 'sss': 222 }));
+        fs.writeJson(fileConfig, dataConfig(settingConfig));
       });
 
     // console.log(`Leyendo ${_xvar}`);
@@ -155,11 +152,11 @@ const readWiteDataConfig = (fileConfig) => {
 
 const dataConfig = (valueEnt) => {
   return {
-    PORTHTTP: valueEnt.PORTHTTP === undefined ? 8081 : valueEnt.PORTHTTP,
+    PORTHTTP: valueEnt.PORTHTTP === undefined ? 8081 : parseInt(valueEnt.PORTHTTP, 10),
     BALANZAPORTCOM:
       valueEnt.BALANZAPORTCOM === undefined ? 'COM1' : valueEnt.BALANZAPORTCOM,
     BALANZABAUDIOS:
-      valueEnt.BALANZABAUDIOS === undefined ? 9600 : valueEnt.BALANZABAUDIOS,
+      valueEnt.BALANZABAUDIOS === undefined ? 9600 : parseInt(valueEnt.BALANZABAUDIOS),
   };
 };
 
