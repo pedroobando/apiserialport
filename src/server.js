@@ -20,7 +20,6 @@ dotenv.config();
 const valoresConfigJson = readDataConfig('config.json');
 const thePort = valoresConfigJson.PORTHTTP;
 
-// const thePort = process.env.PORT || 8080;
 const rutaRaizStatic = path.join(__dirname, './html');
 
 serve.use(cors());
@@ -32,11 +31,7 @@ serve.use(bodyParser.urlencoded({ extended: true }));
 // serve.use('/', require('./routes'));
 
 const onErrorOpenPort = (messageErr) => {
-  const readConfig = readDataConfig('config.json');
-  // console.log(readConfig);
-  // const sss = writeDataConfig('config.json', { ...readConfig, 'BALANZASTATUS': 'ERROR' });
-  // serve.set('ErrorPort', 'Asss');
-  // console.log(`Error abriendo puerto ${messageErr}`);
+  console.log(messageErr);
 };
 
 const baudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
@@ -45,10 +40,6 @@ const puertoSerial = new serialPort(portName, { baudRate }, onErrorOpenPort);
 const lecturaPuerto = puertoSerial.pipe(new readLineSerial());
 
 try {
-  // var stdin = process.openStdin();
-  // stdin.addListener('data', function (d) {
-  //   puertoSerial.write(d.toString().trim() + '\n');
-  // });
   lecturaPuerto.on('open', onOpenPort);
   lecturaPuerto.on('data', onData);
   lecturaPuerto.on('error', (err) => {
@@ -124,17 +115,24 @@ serve.get('/read', async (req, res) => {
 
 serve.post('/configport', (req, res) => {
   try {
-    writeDataConfig('config.json', req.body);
-    res.status(200).json(req.body);
+    const retorno = writeDataConfig('config.json', req.body);
+    res.status(200).redirect('/configport');
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+serve.get('/configport', (req, res) => {
+  try {
+    const retorno = readDataConfig('config.json');
+    res.status(200).json(retorno);
+  } catch (error) {}
+});
+
 serve.get('/config.json', (req, res) => {
   try {
-    const readDataNew = readDataConfig('config.json');
-    res.status(200).json(readDataNew);
+    const dataConfig = readDataConfig('config.json');
+    res.status(200).json(dataConfig);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
