@@ -1,5 +1,5 @@
 const express = require('express');
-const fs = require('fs-extra');
+
 const bodyParser = require('body-parser');
 const serialPort = require('serialport');
 const readLineSerial = require('@serialport/parser-readline');
@@ -9,13 +9,20 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const pjson = require('../package.json');
 
+const { readDataConfig, writeDataConfig } = require('./helperfunc');
+
 let _sendData = undefined;
 
 // initialization
 const serve = express();
 dotenv.config();
 
-const thePort = process.env.PORT || 8080;
+// const thePort = process.env.PORT || 8080;
+const valorJson = readDataConfig('config.json');
+const thePort = valorJson.PORTHTTP;
+// console.log(valorJson);
+
+// const thePort = process.env.PORT || 8080;
 const rutaRaizStatic = path.join(__dirname, './html');
 
 serve.use(cors());
@@ -31,6 +38,7 @@ const portName = process.env.BALANZAPORTCOM || 'COM1'; // "/dev/ttyS0","/dev/tty
 const puertoSerial = new serialPort(portName, { baudRate });
 const lecturaPuerto = puertoSerial.pipe(new readLineSerial());
 
+// const _sds = readDataConfig('config.json').then((retVal) => console.log(retVal));
 try {
   var stdin = process.openStdin();
 
@@ -122,14 +130,9 @@ serve.post('/configport', (req, res) => {
 
 serve.get('/config.json', (req, res) => {
   try {
-    fs.readJson('config.json')
-      .catch((err) => {
-        const readDataNew = writeDataConfig('config.json', { 'nuevo': true });
-        res.status(200).json(readDataNew);
-      })
-      .then((resultado) => {
-        res.status(200).json(resultado);
-      });
+    readDataConfig('config.json').then((readDataNew) => {
+      res.status(200).json(readDataNew);
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -140,24 +143,5 @@ serve.use('/', express.static(rutaRaizStatic));
 serve.use(function (req, res, next) {
   res.status(404).send('Lo siento no encuentro la ruta..!');
 });
-
-const writeDataConfig = (fileConfig, settingConfig) => {
-  try {
-    fs.writeJsonSync(fileConfig, dataConfig(settingConfig));
-    return fs.readJsonSync(fileConfig);
-  } catch (error) {
-    console.log(`Error: ${error}`);
-  }
-};
-
-const dataConfig = (valueEnt) => {
-  return {
-    PORTHTTP: valueEnt.PORTHTTP === undefined ? 3000 : parseInt(valueEnt.PORTHTTP, 10),
-    BALANZAPORTCOM:
-      valueEnt.BALANZAPORTCOM === undefined ? 'COM1' : valueEnt.BALANZAPORTCOM,
-    BALANZABAUDIOS:
-      valueEnt.BALANZABAUDIOS === undefined ? 1200 : parseInt(valueEnt.BALANZABAUDIOS),
-  };
-};
 
 module.exports = { serve, thePort };
