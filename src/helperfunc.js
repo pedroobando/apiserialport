@@ -3,16 +3,8 @@ const fs = require('fs-extra');
 const readDataConfig = (fileConfig) => {
   try {
     return fs.readJsonSync(fileConfig);
-
-    // .readJson(fileConfig)
-    // .catch((err) => {
-    //   return writeDataConfig(fileConfig, { 'nuevo': true });
-    // })
-    // .then((resultado) => {
-    //   return resultado;
-    // });
   } catch (error) {
-    return { 'ok': false };
+    return writeDataConfig(fileConfig, { 'nuevo': true });
   }
 };
 
@@ -32,6 +24,8 @@ const dataConfig = (valueEnt) => {
       valueEnt.BALANZAPORTCOM === undefined ? 'COM1' : valueEnt.BALANZAPORTCOM,
     BALANZABAUDIOS:
       valueEnt.BALANZABAUDIOS === undefined ? 1200 : parseInt(valueEnt.BALANZABAUDIOS),
+    BALANZASTATUS:
+      valueEnt.BALANZASTATUS === undefined ? 'ERROR' : valueEnt.BALANZASTATUS,
   };
 };
 

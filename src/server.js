@@ -17,10 +17,8 @@ let _sendData = undefined;
 const serve = express();
 dotenv.config();
 
-// const thePort = process.env.PORT || 8080;
-const valorJson = readDataConfig('config.json');
-const thePort = valorJson.PORTHTTP;
-// console.log(valorJson);
+const valoresConfigJson = readDataConfig('config.json');
+const thePort = valoresConfigJson.PORTHTTP;
 
 // const thePort = process.env.PORT || 8080;
 const rutaRaizStatic = path.join(__dirname, './html');
@@ -33,24 +31,26 @@ serve.use(bodyParser.urlencoded({ extended: true }));
 
 // serve.use('/', require('./routes'));
 
-const baudRate = parseInt(process.env.BALANZABAUDIOS, 10) || 2400;
-const portName = process.env.BALANZAPORTCOM || 'COM1'; // "/dev/ttyS0","/dev/ttyACM0", "COM1", "COM2"
-const puertoSerial = new serialPort(portName, { baudRate });
-const lecturaPuerto = puertoSerial.pipe(new readLineSerial());
+const onErrorOpenPort = (messageErr) => {
+  serve.set('ErrorPort', 'Asss');
+  // console.log(`Error abriendo puerto ${messageErr}`);
+};
 
-// const _sds = readDataConfig('config.json').then((retVal) => console.log(retVal));
+const baudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
+const portName = valoresConfigJson.BALANZAPORTCOM;
+const puertoSerial = new serialPort(portName, { baudRate }, onErrorOpenPort);
+// const lecturaPuerto = puertoSerial.pipe(new readLineSerial());
+
 try {
-  var stdin = process.openStdin();
-
-  stdin.addListener('data', function (d) {
-    puertoSerial.write(d.toString().trim() + '\n');
-  });
-
-  lecturaPuerto.on('open', onOpenPort);
-  lecturaPuerto.on('data', onData);
-  lecturaPuerto.on('error', (err) => {
-    console.log('Error: ', err.message);
-  });
+  // var stdin = process.openStdin();
+  // stdin.addListener('data', function (d) {
+  //   puertoSerial.write(d.toString().trim() + '\n');
+  // });
+  puertoSerial.on('open', onOpenPort);
+  // lecturaPuerto.on('data', onData);
+  // lecturaPuerto.on('error', (err) => {
+  //   console.log('Error: porno ', err.message);
+  // });
 } catch (error) {
   console.error(`Error lectura ${error}, Equipo: ${portName}, baudRate: ${baudRate}`);
 }
@@ -130,9 +130,8 @@ serve.post('/configport', (req, res) => {
 
 serve.get('/config.json', (req, res) => {
   try {
-    readDataConfig('config.json').then((readDataNew) => {
-      res.status(200).json(readDataNew);
-    });
+    const readDataNew = readDataConfig('config.json');
+    res.status(200).json(readDataNew);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
