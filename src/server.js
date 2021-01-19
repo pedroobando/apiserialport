@@ -32,25 +32,28 @@ serve.use(bodyParser.urlencoded({ extended: true }));
 // serve.use('/', require('./routes'));
 
 const onErrorOpenPort = (messageErr) => {
-  serve.set('ErrorPort', 'Asss');
+  const readConfig = readDataConfig('config.json');
+  // console.log(readConfig);
+  // const sss = writeDataConfig('config.json', { ...readConfig, 'BALANZASTATUS': 'ERROR' });
+  // serve.set('ErrorPort', 'Asss');
   // console.log(`Error abriendo puerto ${messageErr}`);
 };
 
 const baudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
 const portName = valoresConfigJson.BALANZAPORTCOM;
 const puertoSerial = new serialPort(portName, { baudRate }, onErrorOpenPort);
-// const lecturaPuerto = puertoSerial.pipe(new readLineSerial());
+const lecturaPuerto = puertoSerial.pipe(new readLineSerial());
 
 try {
   // var stdin = process.openStdin();
   // stdin.addListener('data', function (d) {
   //   puertoSerial.write(d.toString().trim() + '\n');
   // });
-  puertoSerial.on('open', onOpenPort);
-  // lecturaPuerto.on('data', onData);
-  // lecturaPuerto.on('error', (err) => {
-  //   console.log('Error: porno ', err.message);
-  // });
+  lecturaPuerto.on('open', onOpenPort);
+  lecturaPuerto.on('data', onData);
+  lecturaPuerto.on('error', (err) => {
+    console.log('Error: porno ', err.message);
+  });
 } catch (error) {
   console.error(`Error lectura ${error}, Equipo: ${portName}, baudRate: ${baudRate}`);
 }

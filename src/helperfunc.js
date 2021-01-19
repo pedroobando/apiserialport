@@ -24,8 +24,7 @@ const dataConfig = (valueEnt) => {
       valueEnt.BALANZAPORTCOM === undefined ? 'COM1' : valueEnt.BALANZAPORTCOM,
     BALANZABAUDIOS:
       valueEnt.BALANZABAUDIOS === undefined ? 1200 : parseInt(valueEnt.BALANZABAUDIOS),
-    BALANZASTATUS:
-      valueEnt.BALANZASTATUS === undefined ? 'ERROR' : valueEnt.BALANZASTATUS,
+    BALANZASTATUS: valueEnt.BALANZASTATUS === undefined ? 'OK' : valueEnt.BALANZASTATUS,
   };
 };
 
