@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "installservice": "node src/services.js"
+    "installapp": "cross-env INSTALL=ON node src/servicesinstall.js",
+    "uninstallapp": "cross-env INSTALL=OFF node src/servicesinstall.js",
+    "startapp": "cross-env INSTALL=START node src/servicesinstall.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -19,6 +21,7 @@
     "serialport": "^9.0.4"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "node-windows": "^1.0.0-beta.5",
     "nodemon": "^2.0.7"
   }
