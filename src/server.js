@@ -7,11 +7,10 @@ const path = require('path');
 
 const dotenv = require('dotenv');
 const cors = require('cors');
-const pjson = require('../package.json');
-
+// const pjson = require('../package.json');
 
 const { readDataConfig, writeDataConfig } = require('./helperfunc');
-const { serviceStart, serviceStop } = require('./servicesrestart');
+// const { serviceStart, serviceStop } = require('./servicesrestart');
 
 let _sendData = undefined;
 
@@ -23,17 +22,16 @@ const valoresConfigJson = readDataConfig('config.json');
 const thePort = valoresConfigJson.PORTHTTP;
 
 const rutaRaizStatic = path.join(__dirname, './html');
+const rutaReinicio = path.join(__dirname, 'stop./html');
 
 serve.use(cors());
 serve.use(bodyParser.json());
 serve.use(bodyParser.urlencoded({ extended: true }));
 
-// serve.use(express.static('./html'));
-
-// serve.use('/', require('./routes'));
-
 const onErrorOpenPort = (messageErr) => {
-  console.log(messageErr);
+  if (messageErr !== null) {
+    console.log(messageErr);
+  }
 };
 
 const baudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
@@ -46,6 +44,9 @@ try {
   lecturaPuerto.on('data', onData);
   lecturaPuerto.on('error', (err) => {
     console.log('Error: porno ', err.message);
+  });
+  lecturaPuerto.on('close', (err) => {
+    err.disconnected == true;
   });
 } catch (error) {
   console.error(`Error lectura ${error}, Equipo: ${portName}, baudRate: ${baudRate}`);
@@ -95,6 +96,9 @@ function onData(data) {
 
 // routes
 
+serve.use('/', express.static(rutaRaizStatic));
+serve.use('/reinicio', express.static(rutaReinicio));
+
 serve.get('/read', async (req, res) => {
   try {
     await puertoSerial.write('W' + '\n');
@@ -118,7 +122,12 @@ serve.get('/read', async (req, res) => {
 serve.post('/configport', (req, res) => {
   try {
     const retorno = writeDataConfig('config.json', req.body);
-    serviceStop();
+    // serviceStop();
+    console.log(retorno);
+    console.log(retorno.BALANZAPORTCOM);
+    // puertoSerial.close();
+    // puertoSerial.open();
+    // puertoSerial.update({ baudRate: retorno.BALANZABAUDIOS });
     res.status(200).redirect('/configport');
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -127,8 +136,9 @@ serve.post('/configport', (req, res) => {
 
 serve.get('/configport', (req, res) => {
   try {
-    const retorno = readDataConfig('config.json');
-    res.status(200).json(retorno);
+    // const retorno = readDataConfig('config.json');
+    // res.status(200).json(retorno);
+    res.sendFile('./html/stop.html');
   } catch (error) {}
 });
 
@@ -140,8 +150,6 @@ serve.get('/config.json', (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-serve.use('/', express.static(rutaRaizStatic));
 
 serve.use(function (req, res, next) {
   res.status(404).send('Lo siento no encuentro la ruta..!');
