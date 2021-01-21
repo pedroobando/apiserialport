@@ -49,14 +49,14 @@ try {
     err.disconnected == true;
   });
 } catch (error) {
-  console.error(`Error lectura ${error}, Equipo: ${portName}, baudRate: ${baudRate}`);
+  console.log(`Error lectura ${error}, Equipo: ${portName}, baudRate: ${baudRate}`);
 }
 
 function onOpenPort() {
   try {
     console.log(`Puerto conectado: ${portName}`);
   } catch (error) {
-    console.error(`error apertura ${error}`);
+    console.log(`error apertura ${error}`);
   }
 }
 
@@ -90,14 +90,14 @@ function onData(data) {
       // console.log(_sendData);
     }
   } catch (error) {
-    console.error(error);
+    console.log(`data: ${error}`);
   }
 }
 
 // routes
 
 serve.use('/', express.static(rutaRaizStatic));
-serve.use('/reinicio', express.static(rutaReinicio));
+serve.use('/stop', express.static(rutaReinicio));
 
 serve.get('/read', async (req, res) => {
   try {
@@ -123,14 +123,22 @@ serve.post('/configport', (req, res) => {
   try {
     const retorno = writeDataConfig('config.json', req.body);
     // serviceStop();
-    console.log(retorno);
-    console.log(retorno.BALANZAPORTCOM);
-    // puertoSerial.close();
-    // puertoSerial.open();
-    // puertoSerial.update({ baudRate: retorno.BALANZABAUDIOS });
-    res.status(200).redirect('/configport');
+    puertoSerial.close();
+    puertoSerial.open();
+    puertoSerial.update({ baudRate: retorno.BALANZABAUDIOS });
+    res.status(200).redirect('/stop.html');
+    // filePath = __dirname + '/html/stop.html';
+
+    // if (path.existsSync(filePath)) {
+    //   res.sendFile(filePath);
+    // } else {
+    //   res.statusCode = 404;
+    //   res.write('404 sorry not found');
+    //   res.end();
+    // }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).redirect('/stop.html');
+    // res.status(500).json({ error: error.message });
   }
 });
 
@@ -138,7 +146,17 @@ serve.get('/configport', (req, res) => {
   try {
     // const retorno = readDataConfig('config.json');
     // res.status(200).json(retorno);
-    res.sendFile('./html/stop.html');
+    // res.sendFile('./html/stop.html');
+
+    filePath = __dirname + '/html/stop.html';
+
+    if (path.existsSync(filePath)) {
+      res.sendFile(filePath);
+    } else {
+      res.statusCode = 404;
+      res.write('404 sorry not found');
+      res.end();
+    }
   } catch (error) {}
 });
 
