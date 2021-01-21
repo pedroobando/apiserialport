@@ -1,19 +1,18 @@
-const express = require('express');
+// const express = require('express');
 
 const serialPort = require('serialport');
 const readLineSerial = require('@serialport/parser-readline');
-const path = require('path');
 
 const { readDataConfig, writeDataConfig } = require('./helperfunc');
 
-// initialization
-const serve = express();
-
 const valoresConfigJson = readDataConfig('config.json');
-const thePort = valoresConfigJson.PORTHTTP;
 
 const onErrorOpenPort = (messageErr) => {
-  console.log(messageErr);
+  if (messageErr !== null) {
+    console.log('PORT CLOSE');
+  } else {
+    console.log('PORT OPEN');
+  }
 };
 
 const baudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
@@ -29,34 +28,7 @@ const onOpenPort = () => {
   }
 };
 
-const onData = (data) => {
-  try {
-    const dateNow = new Date();
-    const dateString =
-      ('0' + dateNow.getHours()).slice(-2) +
-      ':' +
-      ('0' + dateNow.getMinutes()).slice(-2) +
-      ':' +
-      ('0' + dateNow.getSeconds()).slice(-2);
-
-    let reciveData = data.toString();
-    reciveData = reciveData.replace(/(\r\n|\n|\r|\=)/gm, '');
-
-    if (reciveData.slice(-2) === 'KG') {
-      valorPeso = reciveData;
-    }
-
-    if (reciveData.slice(0, 1) === 'S') {
-      valorEstable = reciveData;
-      _sendData = { hora: dateString, valorPeso, valorEstable };
-      // console.log(_sendData);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const openBalanzaPort = () => {
+const openBalanzaPort = (onData) => {
   try {
     // lecturaPuerto.on('open', onOpenPort);
     lecturaPuerto.on('data', onData);
@@ -72,7 +44,21 @@ const closeBalanzaPort = () => {
   lecturaPuerto.on('open', onOpenPort);
 };
 
-let valorPeso = '';
-let valorEstable = '';
+// const SerialPort = require('serialport');
+const allBalanzaPort = () => {
+  // let retval = [{ 'test': 1 }];
+  return serialPort.list().then((ports) => {
+    return ports;
+  });
+  // returnconsole.log(oo);
+  // return retval;
+  // (ports) => ports.forEach(console.log),
+  // (err) => console.error(err)
+};
 
-module.exports = { serve, thePort };
+module.exports = {
+  puertoSerial,
+  openBalanzaPort,
+  closeBalanzaPort,
+  allBalanzaPort,
+};

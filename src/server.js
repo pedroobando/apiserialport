@@ -1,8 +1,7 @@
 const express = require('express');
-
 const bodyParser = require('body-parser');
-const serialPort = require('serialport');
-const readLineSerial = require('@serialport/parser-readline');
+// const serialPort = require('serialport');
+// const readLineSerial = require('@serialport/parser-readline');
 const path = require('path');
 
 const dotenv = require('dotenv');
@@ -12,7 +11,12 @@ const cors = require('cors');
 const { readDataConfig, writeDataConfig } = require('./helperfunc');
 // const { serviceStart, serviceStop } = require('./servicesrestart');
 
-let _sendData = undefined;
+const {
+  openBalanzaPort,
+  closeBalanzaPort,
+  puertoSerial,
+  allBalanzaPort,
+} = require('./readport');
 
 // initialization
 const serve = express();
@@ -28,42 +32,88 @@ serve.use(cors());
 serve.use(bodyParser.json());
 serve.use(bodyParser.urlencoded({ extended: true }));
 
-const onErrorOpenPort = (messageErr) => {
-  if (messageErr !== null) {
-    console.log(messageErr);
-  }
-};
+// template
 
-const baudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
-const portName = valoresConfigJson.BALANZAPORTCOM;
-const puertoSerial = new serialPort(portName, { baudRate }, onErrorOpenPort);
-const lecturaPuerto = puertoSerial.pipe(new readLineSerial());
+// serve.set('views', './views');
+// serve.engine('jsx', consolidate.react);
+// serve.set('view engine','jsx')
 
-try {
-  lecturaPuerto.on('open', onOpenPort);
-  lecturaPuerto.on('data', onData);
-  lecturaPuerto.on('error', (err) => {
-    console.log('Error: porno ', err.message);
-  });
-  lecturaPuerto.on('close', (err) => {
-    err.disconnected == true;
-  });
-} catch (error) {
-  console.log(`Error lectura ${error}, Equipo: ${portName}, baudRate: ${baudRate}`);
-}
+serve.set('views', __dirname + '/views');
+serve.set('view engine', 'jsx');
+var options = { beautify: true };
+serve.engine('jsx', require('express-react-views').createEngine(options));
 
-function onOpenPort() {
-  try {
-    console.log(`Puerto conectado: ${portName}`);
-  } catch (error) {
-    console.log(`error apertura ${error}`);
-  }
-}
+// const onErrorOpenPort = (messageErr) => {
+//   if (messageErr !== null) {
+//     console.log(messageErr);
+//   }
+// };
 
+// const baudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
+// const portName = valoresConfigJson.BALANZAPORTCOM;
+// const puertoSerial = new serialPort(portName, { baudRate }, onErrorOpenPort);
+// const lecturaPuerto = puertoSerial.pipe(new readLineSerial());
+
+// try {
+//   lecturaPuerto.on('open', onOpenPort);
+//   lecturaPuerto.on('data', onData);
+//   lecturaPuerto.on('error', (err) => {
+//     console.log('Error: porno ', err.message);
+//   });
+//   lecturaPuerto.on('close', (err) => {
+//     err.disconnected == true;
+//   });
+// } catch (error) {
+//   console.log(`Error lectura ${error}, Equipo: ${portName}, baudRate: ${baudRate}`);
+// }
+
+// function onOpenPort() {
+//   try {
+//     console.log(`Puerto conectado: ${portName}`);
+//   } catch (error) {
+//     console.log(`error apertura ${error}`);
+//   }
+// }
+
+// let valorPeso = '';
+// let valorEstable = '';
+
+// function onData(data) {
+//   try {
+//     const dateNow = new Date();
+//     const dateString =
+//       ('0' + dateNow.getHours()).slice(-2) +
+//       ':' +
+//       ('0' + dateNow.getMinutes()).slice(-2) +
+//       ':' +
+//       ('0' + dateNow.getSeconds()).slice(-2);
+
+//     // const horaActual = `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`;
+//     let reciveData = data.toString();
+//     reciveData = reciveData.replace(/(\r\n|\n|\r|\=)/gm, '');
+
+//     if (reciveData.slice(-2) === 'KG') {
+//       valorPeso = reciveData;
+//     }
+
+//     if (reciveData.slice(0, 1) === 'S') {
+//       valorEstable = reciveData;
+//       _sendData = { hora: dateString, valorPeso, valorEstable };
+
+//       // const sendData = { hora: dateString, valorPeso, valorEstable };
+//       // serve.locals.sendData = sendData;
+//       // console.log(_sendData);
+//     }
+//   } catch (error) {
+//     console.log(`data: ${error}`);
+//   }
+// }
+
+let _sendData = undefined;
 let valorPeso = '';
 let valorEstable = '';
 
-function onData(data) {
+const onData = (data) => {
   try {
     const dateNow = new Date();
     const dateString =
@@ -73,7 +123,6 @@ function onData(data) {
       ':' +
       ('0' + dateNow.getSeconds()).slice(-2);
 
-    // const horaActual = `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`;
     let reciveData = data.toString();
     reciveData = reciveData.replace(/(\r\n|\n|\r|\=)/gm, '');
 
@@ -84,15 +133,14 @@ function onData(data) {
     if (reciveData.slice(0, 1) === 'S') {
       valorEstable = reciveData;
       _sendData = { hora: dateString, valorPeso, valorEstable };
-
-      // const sendData = { hora: dateString, valorPeso, valorEstable };
-      // serve.locals.sendData = sendData;
       // console.log(_sendData);
     }
   } catch (error) {
-    console.log(`data: ${error}`);
+    // console.log(error);
   }
-}
+};
+
+openBalanzaPort(onData);
 
 // routes
 
@@ -101,19 +149,19 @@ serve.use('/stop', express.static(rutaReinicio));
 
 serve.get('/read', async (req, res) => {
   try {
-    await puertoSerial.write('W' + '\n');
-    setTimeout(() => {
-      res.status(200).json(_sendData);
-    }, 100);
+    res.status(200).json(_sendData);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-    // const { hora, valorPeso, valorEstable } = req.app.locals.sendData;
-    // const sendData = {
-    //   apps: pjson.name,
-    //   version: pjson.version,
-    //   hora,
-    //   valorPeso,
-    //   valorEstable,
-    // };
+serve.get('/portall', async (req, res) => {
+  try {
+    const aaas = allBalanzaPort();
+    aaas.then((ports) => {
+      res.status(200).json(ports);
+      // console.log(ports);
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -123,10 +171,11 @@ serve.post('/configport', (req, res) => {
   try {
     const retorno = writeDataConfig('config.json', req.body);
     // serviceStop();
-    puertoSerial.close();
-    puertoSerial.open();
+    // puertoSerial.close();
+
     puertoSerial.update({ baudRate: retorno.BALANZABAUDIOS });
-    res.status(200).redirect('/stop.html');
+    // puertoSerial.open();
+    res.status(200).redirect('/index.html?PORT=OPEN');
     // filePath = __dirname + '/html/stop.html';
 
     // if (path.existsSync(filePath)) {
@@ -137,6 +186,7 @@ serve.post('/configport', (req, res) => {
     //   res.end();
     // }
   } catch (error) {
+    console.log('eRROR DE CONFIG port');
     res.status(500).redirect('/stop.html');
     // res.status(500).json({ error: error.message });
   }
@@ -167,6 +217,10 @@ serve.get('/config.json', (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+serve.get('/perfil', (req, res) => {
+  res.render('perfil', { name: 'Pedro Obando' });
 });
 
 serve.use(function (req, res, next) {
