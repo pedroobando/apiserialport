@@ -9,7 +9,9 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const pjson = require('../package.json');
 
+
 const { readDataConfig, writeDataConfig } = require('./helperfunc');
+const { serviceStart, serviceStop } = require('./servicesrestart');
 
 let _sendData = undefined;
 
@@ -116,6 +118,7 @@ serve.get('/read', async (req, res) => {
 serve.post('/configport', (req, res) => {
   try {
     const retorno = writeDataConfig('config.json', req.body);
+    serviceStop();
     res.status(200).redirect('/configport');
   } catch (error) {
     res.status(500).json({ error: error.message });

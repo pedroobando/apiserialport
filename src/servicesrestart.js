@@ -8,14 +8,20 @@ const valoresConfigJson = readDataConfig('config.json');
 
 const svc = new Service({
   name: 'Balanza Lector',
-  description: 'Servidor web en nodejs, leer el puerto com? de balanza',
-  script: 'C:\\Users\\pedro\\node\\apiserialport\\src\\index.js',
-  // script: ruta.join(__dirname, 'index.js'),
+  description: 'Servidor web nodejs, leer puerto COM de balanza',
+  // script: 'C:\\Users\\pedro\\node\\apiserialport\\src\\index.js',
+  script: ruta.join(__dirname, 'index.js'),
   env: {
     PORT: valoresConfigJson.PORTHTTP,
     BALANZAPORTCOM: valoresConfigJson.BALANZAPORTCOM,
     BALANZABAUDIOS: valoresConfigJson.BALANZABAUDIOS,
   },
+  // env: {
+  //   PORT: 3001,
+  //   BALANZAPORTCOM: 'COM3',
+  //   BALANZABAUDIOS: 9600,
+  // },  
+
   // nodeOptions: ['--harmony', '--max_old_space_size=4096'],
   //, workingDirectory: '...'
   //, allowServiceLogon: true
@@ -25,13 +31,14 @@ const svc = new Service({
 // process is available as a service.
 svc.on('install', function () {
   svc.start();
-  console.log(`Visite http://localhost:${valoresConfigJson.PORTHTTP}/`);
-  console.log('Servicio creado exitosamente, Balanza Comunicacion');
+  console.log('Install complete.');
+  console.log('The service exists: ', svc.exists);
 });
 
 svc.on('start', () => {
   try {
-    console.log('start');
+    console.log('Service starting...');
+    console.log('The service exists: ', svc.exists);
   } catch (err) {
     console.log(err);
   }
@@ -42,15 +49,14 @@ svc.on('uninstall', () => {
   console.log('The service exists: ', svc.exists);
 });
 
-// svc.on('stop', () => {
-//   console.log("Service stopped!")
-//   console.log('The service exists: ',svc.exists);
-// });
-
-// svc.on('start', () => {
-//   console.log("Service start..!!!")
-//   console.log('The service exists: ',svc.exists);
-// });
+svc.on('stop', () => {
+  try {
+  console.log("Service stopped!")
+  console.log('The service exists: ',svc.exists);
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 const serviceInstall = () => {
   svc.install();
@@ -60,14 +66,12 @@ const serviceUninstall = () => {
   svc.uninstall();
 };
 
-// const serviceStop =()=>{
-//   // svc.stop();
-// }
+const serviceStop =()=>{
+  svc.stop();
+}
 
 const serviceStart = () => {
-  svc.restart();
-  console.log('Service start..!!!');
-  console.log('The service exists: ', svc.exists);
+  svc.start();
 };
 
-module.exports = { serviceInstall, serviceUninstall, serviceStart };
+module.exports = { serviceInstall, serviceUninstall, serviceStart, serviceStop };
