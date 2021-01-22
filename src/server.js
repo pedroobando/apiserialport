@@ -157,7 +157,7 @@ serve.get('/', (req, res) => {
 serve.post('/', (req, res) => {
   try {
     console.log(req.body);
-    // const retorno = writeDataConfig('config.json', req.body);
+    const retorno = writeDataConfig('config.json', req.body);
     // serviceStop();
     // puertoSerial.close();
 
