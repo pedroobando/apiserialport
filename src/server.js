@@ -26,6 +26,7 @@ const valoresConfigJson = readDataConfig('config.json');
 const thePort = valoresConfigJson.PORTHTTP;
 
 const rutaRaizStatic = path.join(__dirname, './html');
+const rutaStaticCss = path.join(__dirname, './public');
 const rutaReinicio = path.join(__dirname, 'stop./html');
 
 serve.use(cors());
@@ -144,8 +145,39 @@ openBalanzaPort(onData);
 
 // routes
 
-serve.use('/', express.static(rutaRaizStatic));
+// serve.use('/', express.static(rutaRaizStatic));
+serve.use('/css', express.static(rutaStaticCss));
 serve.use('/stop', express.static(rutaReinicio));
+
+serve.get('/', (req, res) => {
+  const { PORTHTTP, BALANZAPORTCOM, BALANZABAUDIOS } = readDataConfig('config.json');
+  res.render('home', { initialState: { PORTHTTP, BALANZABAUDIOS, BALANZAPORTCOM } });
+});
+
+serve.post('/', (req, res) => {
+  try {
+    console.log(req.body);
+    // const retorno = writeDataConfig('config.json', req.body);
+    // serviceStop();
+    // puertoSerial.close();
+
+    // puertoSerial.update({ baudRate: retorno.BALANZABAUDIOS });
+    // puertoSerial.open();
+    // res.status(200).redirect('/');
+    res.redirect('/');
+    // filePath = __dirname + '/html/stop.html';
+
+    // if (path.existsSync(filePath)) {
+    //   res.sendFile(filePath);
+    // } else {
+    //   res.statusCode = 404;
+    //   res.write('404 sorry not found');
+    //   res.end();
+    // }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 serve.get('/read', async (req, res) => {
   try {
@@ -164,31 +196,6 @@ serve.get('/portall', async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
-  }
-});
-
-serve.post('/configport', (req, res) => {
-  try {
-    const retorno = writeDataConfig('config.json', req.body);
-    // serviceStop();
-    // puertoSerial.close();
-
-    puertoSerial.update({ baudRate: retorno.BALANZABAUDIOS });
-    // puertoSerial.open();
-    res.status(200).redirect('/index.html?PORT=OPEN');
-    // filePath = __dirname + '/html/stop.html';
-
-    // if (path.existsSync(filePath)) {
-    //   res.sendFile(filePath);
-    // } else {
-    //   res.statusCode = 404;
-    //   res.write('404 sorry not found');
-    //   res.end();
-    // }
-  } catch (error) {
-    console.log('eRROR DE CONFIG port');
-    res.status(500).redirect('/stop.html');
-    // res.status(500).json({ error: error.message });
   }
 });
 
