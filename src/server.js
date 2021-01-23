@@ -20,7 +20,7 @@ dotenv.config();
 // const thePort = valoresConfigJson.PORTHTTP;
 const thePort = 3000;
 
-const rutaRaizStatic = path.join(__dirname, './html');
+// const rutaRaizStatic = path.join(__dirname, './html');
 const rutaStaticCss = path.join(__dirname, './public');
 const rutaReinicio = path.join(__dirname, 'stop./html');
 
@@ -99,7 +99,10 @@ serve.get('/read', (req, res) => {
 serve.get('/puertos', (req, res) => {
   try {
     const portAll = allBalanzaPort();
-    portAll.then((item) => res.status(200).render('puertos', { portAll: item }));
+    portAll.then((item) => {
+      console.log(item);
+      res.status(200).render('puertos', { portAll: item });
+    });
     // console.log(item));
     // console.log(portAll);
     // res.redirect('/');
