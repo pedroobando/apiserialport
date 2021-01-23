@@ -41,12 +41,12 @@ const initBalanzaPort = (onfncData) => {
       });
     }
 
-    console.log({
-      path: puertoSerial.path,
-      setting: puertoSerial.settings,
-      opening: puertoSerial.opening,
-      closing: puertoSerial.closing,
-    });
+    // console.log({
+    //   path: puertoSerial.path,
+    //   setting: puertoSerial.settings,
+    //   opening: puertoSerial.opening,
+    //   closing: puertoSerial.closing,
+    // });
   } catch (error) {
     console.error(`Error open ${error}, Equipo: ${portName}, baudRate: ${portBaudRate}`);
   }

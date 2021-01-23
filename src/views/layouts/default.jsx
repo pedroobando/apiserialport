@@ -6,7 +6,7 @@ function DefaultLayout(props) {
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/css/semantic.min.css" />
+        <link rel="stylesheet" href="/pubic/semantic.min.css" />
         <title>{props.title}</title>
       </head>
       <body>

@@ -10,7 +10,7 @@ const puertos = ({ portAll }) => {
           ({ manufacturer, serialNumber, path, pnpId, productId, vendorId }) => {
             return (
               <div className="item" key={path}>
-                <img className="ui avatar image" src="/css/comserial.png" />
+                <img className="ui avatar image" src="/pubic/comserial.png" />
                 <div className="content">
                   <h3 className="ui blue header">PORT &nbsp; {path}</h3>
 

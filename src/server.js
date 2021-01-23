@@ -22,7 +22,6 @@ const thePort = 3000;
 
 // const rutaRaizStatic = path.join(__dirname, './html');
 const rutaStaticCss = path.join(__dirname, './public');
-const rutaReinicio = path.join(__dirname, 'stop./html');
 
 serve.use(cors());
 serve.use(bodyParser.json());
@@ -68,8 +67,7 @@ initBalanzaPort(onData);
 
 // routes
 
-serve.use('/css', express.static(rutaStaticCss));
-serve.use('/stop', express.static(rutaReinicio));
+serve.use('/pubic', express.static(rutaStaticCss));
 
 serve.get('/', (req, res) => {
   const initialState = readingData();
@@ -100,23 +98,12 @@ serve.get('/puertos', (req, res) => {
   try {
     const portAll = allBalanzaPort();
     portAll.then((item) => {
-      console.log(item);
+      // console.log(item);
       res.status(200).render('puertos', { portAll: item });
     });
-    // console.log(item));
-    // console.log(portAll);
-    // res.redirect('/');
-    // res.status(200).render('puertos', { portAll });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
-
-serve.get('/perfil', async (req, res) => {
-  const fsx = require('fs-extra');
-  await fsx.writeJson('./src/package2.json', { name: 'fs-extra' });
-  console.log('success!');
-  res.render('perfil', { name: 'Pedro Obando' });
 });
 
 serve.use(function (req, res, next) {

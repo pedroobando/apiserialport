@@ -58,8 +58,8 @@ const home = ({ initialState }) => {
               onChange={handleInputChange}
             />
             &nbsp;&nbsp;
-            {PORTISOPEN && <label className="ui green label">Puerto BIERTO</label>}
-            {!PORTISOPEN && <label className="ui red label">Puerto CERRADO</label>}
+            {PORTISOPEN && <label className="ui green label">ABIERTO </label>}
+            {!PORTISOPEN && <label className="ui red label">CERRADO</label>}
           </div>
           <div className="inline field">
             <div className="ui right pointing label">Velocidad trasmicion</div>
