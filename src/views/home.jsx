@@ -5,7 +5,7 @@ const DefaultLayout = require('./layouts/default');
 
 const home = ({ initialState }) => {
   const [formValues, setFormValues] = useState(initialState);
-  const { PORTHTTP, BALANZABAUDIOS, BALANZAPORTCOM } = formValues;
+  const { PORTHTTP, BALANZABAUDIOS, BALANZAPORTCOM, PORTISOPEN } = formValues;
 
   const handleInputChange = ({ target }) => {
     // const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -57,6 +57,9 @@ const home = ({ initialState }) => {
               placeholder="Puerto / PORT"
               onChange={handleInputChange}
             />
+            &nbsp;&nbsp;
+            {PORTISOPEN && <label className="ui green label">Puerto BIERTO</label>}
+            {!PORTISOPEN && <label className="ui red label">Puerto CERRADO</label>}
           </div>
           <div className="inline field">
             <div className="ui right pointing label">Velocidad trasmicion</div>

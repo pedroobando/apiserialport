@@ -13,7 +13,12 @@ function DefaultLayout(props) {
         <nav className="ui menu">
           <div className="ui container">
             <div className="header item">Tomas Company</div>
-            <a className="item"> Inicio </a>
+            <a className="item" href="/">
+              Inicio
+            </a>
+            <a className="item" href="/puertos">
+              Puertos
+            </a>
             <a className="item" href="/read">
               Valores Json
             </a>
