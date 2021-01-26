@@ -12,7 +12,9 @@ const puertos = ({ portAll }) => {
               <div className="item" key={path}>
                 <img className="ui avatar image" src="/pubic/comserial.png" />
                 <div className="content">
-                  <h3 className="ui blue header">PORT &nbsp; {path}</h3>
+                  <a href={`/?selectport=${path}`} className="ui blue header h3">
+                    PORT &nbsp; {path}
+                  </a>
 
                   <ul className="ui list">
                     <li>

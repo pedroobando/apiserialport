@@ -91,8 +91,14 @@ initBalanzaPort(onData);
 serve.use('/pubic', express.static(rutaStaticCss));
 
 serve.get('/', (req, res) => {
-  const initialState = readingData();
-  res.render('home', { initialState });
+  try {
+    const { selectport } = req.query;
+    const initialState = readingData();
+    if (selectport.trim().length >= 2) initialState.BALANZAPORTCOM = selectport;
+    res.render('home', { initialState });
+  } catch (error) {
+    res.redirect('/?selectport=null');
+  }
 });
 
 serve.post('/', (req, res) => {
@@ -103,8 +109,6 @@ serve.post('/', (req, res) => {
     initBalanzaPort(onData);
     // res.redirect('back');
     res.redirect(req.get('referer'));
-    // res.redirect('/read');
-    // res.redirect('/puertos');
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

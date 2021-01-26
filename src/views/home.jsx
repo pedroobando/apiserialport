@@ -32,7 +32,7 @@ const home = ({ initialState }) => {
         <div className="ui header">Configuracion</div>
 
         <form method="POST" action="/" className="ui fluid form">
-          <p>Valores del servidor web</p>
+          {/* <p>Valores del servidor web</p>
           <div className="inline field">
             <div className="ui right pointing label">Puerto http</div>
             <input
@@ -45,7 +45,7 @@ const home = ({ initialState }) => {
             />
           </div>
 
-          <div className="ui divider"></div>
+          <div className="ui divider"></div> */}
           <p>Valores de comunicacion con la balanza</p>
           <div className="inline field">
             <div className="ui right pointing label">Puerto comunicacion</div>
@@ -57,9 +57,6 @@ const home = ({ initialState }) => {
               placeholder="Puerto / PORT"
               onChange={handleInputChange}
             />
-            &nbsp;&nbsp;
-            {PORTISOPEN && <label className="ui green label">ABIERTO </label>}
-            {!PORTISOPEN && <label className="ui red label">CERRADO</label>}
           </div>
           <div className="inline field">
             <div className="ui right pointing label">Velocidad trasmicion</div>
