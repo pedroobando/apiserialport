@@ -33,8 +33,8 @@ var options = { beautify: true };
 serve.engine('jsx', require('express-react-views').createEngine(options));
 
 let _sendData = undefined;
-let valorPeso = '';
-let valorEstable = '';
+// let valorPeso = '';
+// let valorEstable = '';
 
 const onData = (data) => {
   try {
@@ -48,20 +48,41 @@ const onData = (data) => {
 
     let reciveData = data.toString();
     reciveData = reciveData.replace(/(\r\n|\n|\r|\=)/gm, '');
-
-    if (reciveData.slice(-2) === 'KG') {
-      valorPeso = reciveData;
-    }
-
-    if (reciveData.slice(0, 1) === 'S') {
-      valorEstable = reciveData;
-      _sendData = { hora: dateString, valorPeso, valorEstable };
-      // console.log(_sendData);
-    }
+    // console.log(reciveData);
+    const valorStr = reciveData.slice(-7);
+    _sendData = { hora: dateString, valorStr, valorNum: parseFloat(valorStr) };
+    console.log(_sendData);
   } catch (error) {
     console.log(error);
   }
 };
+
+// const onData2 = (data) => {
+//   try {
+//     const dateNow = new Date();
+//     const dateString =
+//       ('0' + dateNow.getHours()).slice(-2) +
+//       ':' +
+//       ('0' + dateNow.getMinutes()).slice(-2) +
+//       ':' +
+//       ('0' + dateNow.getSeconds()).slice(-2);
+
+//     let reciveData = data.toString();
+//     reciveData = reciveData.replace(/(\r\n|\n|\r|\=)/gm, '');
+
+//     if (reciveData.slice(-2) === 'KG') {
+//       valorPeso = reciveData;
+//     }
+
+//     if (reciveData.slice(0, 1) === 'S') {
+//       valorEstable = reciveData;
+//       _sendData = { hora: dateString, valorPeso, valorEstable };
+//       // console.log(_sendData);
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 initBalanzaPort(onData);
 
@@ -80,7 +101,10 @@ serve.post('/', (req, res) => {
 
     settingData(BALANZAPORTCOM, BALANZABAUDIOS);
     initBalanzaPort(onData);
-    res.redirect('/');
+    // res.redirect('back');
+    res.redirect(req.get('referer'));
+    // res.redirect('/read');
+    // res.redirect('/puertos');
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

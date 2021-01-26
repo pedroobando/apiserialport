@@ -1,14 +1,12 @@
-int delayGen = 500;
+int delayGen = 350;
 int led13 = 13;
 
 int minNumber = 1200;
-int maxNumber = 1300;
+int maxNumber = 1580;
 
 float fltTara = 0;
-int pesoEstable = 0;
 int velocidad = 9600;
-String salidaKG = "";
-
+String salidaKG = "kg\n";
 
 void setup() {
   Serial.begin(velocidad);
@@ -22,31 +20,16 @@ void setup() {
 }
 
 void loop() {
-  if(Serial.available()) {
-    String data = Serial.readStringUntil('\n');
-//    Serial.println(data);
-    pesoSalida();
-//    data = Serial.read();
-//    if(data>='A' && data <='Z') {
-//      pesoSalida();
-//    }
-  }
-
-  
+  pesoSalida();
 }
 
 void pesoSalida() {
   digitalWrite(led13, HIGH);
-  pesoEstable = random(0,2);
   fltTara = random(minNumber, maxNumber);
-  fltTara = fltTara * 1.231;
-  salidaKG = String(fltTara)+"KG";
-
-  Serial.println("");
+  fltTara = fltTara * 0.91536;
+  salidaKG = String(fltTara) + "";
   Serial.println(salidaKG);
-  Serial.println("");
-  Serial.println("S"+String(pesoEstable)+"0");
   delay(delayGen);
   digitalWrite(led13, LOW);
-//  delay(delayGen);
+  delay(delayGen);
 }
