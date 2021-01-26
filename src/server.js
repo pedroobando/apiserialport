@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+// const socket = require('socket.io');
 
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -14,6 +15,7 @@ const {
 
 // initialization
 const serve = express();
+// const iosocket = socket(serve);
 dotenv.config();
 
 // const valoresConfigJson = readDataConfig('./config.json');
@@ -52,37 +54,11 @@ const onData = (data) => {
     const valorStr = reciveData.slice(-7);
     _sendData = { hora: dateString, valorStr, valorNum: parseFloat(valorStr) };
     console.log(_sendData);
+    // iosocket.emit('sendTara', _sendData);
   } catch (error) {
     console.log(error);
   }
 };
-
-// const onData2 = (data) => {
-//   try {
-//     const dateNow = new Date();
-//     const dateString =
-//       ('0' + dateNow.getHours()).slice(-2) +
-//       ':' +
-//       ('0' + dateNow.getMinutes()).slice(-2) +
-//       ':' +
-//       ('0' + dateNow.getSeconds()).slice(-2);
-
-//     let reciveData = data.toString();
-//     reciveData = reciveData.replace(/(\r\n|\n|\r|\=)/gm, '');
-
-//     if (reciveData.slice(-2) === 'KG') {
-//       valorPeso = reciveData;
-//     }
-
-//     if (reciveData.slice(0, 1) === 'S') {
-//       valorEstable = reciveData;
-//       _sendData = { hora: dateString, valorPeso, valorEstable };
-//       // console.log(_sendData);
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
 
 initBalanzaPort(onData);
 

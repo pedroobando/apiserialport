@@ -20,7 +20,8 @@
     "fs-extra": "^9.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "serialport": "^9.0.4"
+    "serialport": "^9.0.4",
+    "socket.io": "^3.1.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
