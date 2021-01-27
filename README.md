@@ -1,4 +1,4 @@
-# apiserialport //
+# apiSerialPort
 
 ## Description
 
