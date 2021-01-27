@@ -1,34 +1,62 @@
-# apiserialport // Haciendo pruebas - no es definitiva.
+# apiserialport //
 
 ## Description
 
 Aplicacion con el fin de leer el puerto serial (RS232) de una balanza, sus datos son capturados para luego ser mostrados en un servidor web mediante http, con el comando GET.
 
-El objetivo es crear un contenedor en docker que encapsule la aplicacion y este activo siempre desde el inicio del computador o equipo donde se encuentre alojado. El contenedor es linux debian y nodejs, tambien las respectivas librerias que abriran el puerto serial o usb.
+## Modo de instalacion
 
-## Api
+```bash
+# Para linux, se puede creear o instalar mediante un contenedor Docker
+
+# Creacion de la imagen
+  $ docker build -t readbalanzaimg .
+
+# Creacion del Contenedor
+  $ docker run --name readbalanza -it -d --restart always --privileged -v /dev/ttyACM0:/dev/ttyACM0 -p 3010:3010 readbalanzaimg
+
+# Para windows, se instala como un servicio de windows. creando el nombre de 'Balanza Lector'.
+# Mediante el siguiente comando ejecutado desde consola:
+  npm run installapp
+
+# Para desinstalar el servicio de windows, se realiza mediante el siguiente comando:
+  npm run uninstallapp
+```
+
+## Cambio del Puerto http://xxx.xxx.xxx.xx:????
+
+```bash
+# En el archivo packege.json, existe una seccion llamada config dentro existe una etiqueta de nombre "porthttp:"
+
+  "config": {
+    "porthttp": "3010"
+  },
+
+```
+
+## Api expuesta
 
 ```bash
 # Lectura del api, mediante el comando GET
   http:[IP]:[puerto]/read
 
-  http://172.1.1.0:4001/read
+  http://172.1.1.0:3010/read
 
-```
+# Valor de salida un JSON con el siguiente formato:
 
-## Archivo .env
+# Si la peticion tiene exito o el puerto seleccionado contiene data, envia un codigo 200 y el siguiente json.
+{
+  "statusOk": true,
+  "hora": "16:52:33",
+  "valor": "1291.57"
+}
 
-```bash
-# Valores internos de la aplicacion dentro del contenedor
+# Si la peticion tiene falla o el puerto seleccionado no contiene data, envia un codigo 409 y el siguiente json.
+{
+  "statusOk": false,
+  "msg": "data not found."
+}
 
-# Numero del puerto interno => http:localhost:4000
-  PORT = 4000
-
-# nombre del serial / usb, que leera la aplicacion.
-  BALANZAPORTCOM = '/dev/ttyACM0'
-
-# velocidad de transmicion, del equipo
-  BALANZABAUDIOS = 9600
 ```
 
 ## Guia Docker
@@ -52,7 +80,7 @@ El objetivo es crear un contenedor en docker que encapsule la aplicacion y este 
 # readbalanzaimg, es el nombre de la imagen a la cual primero creamos, de la cual se creara el contenedor.
 
 
-$ docker run --name readbalanza -it -d --restart always --privileged -v /dev/ttyACM0:/dev/ttyACM0 -p 4001:4000 readbalanzaimg
+$ docker run --name readbalanza -it -d --restart always --privileged -v /dev/ttyACM0:/dev/ttyACM0 -p 3010:3010 readbalanzaimg
 
 
 # Guida de node Docker
