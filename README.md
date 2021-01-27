@@ -1,4 +1,4 @@
-# apiSerialPort
+# APISERIALPORT
 
 ## Description
 
@@ -23,7 +23,7 @@ Aplicacion con el fin de leer el puerto serial (RS232) de una balanza, sus datos
   npm run uninstallapp
 ```
 
-## Cambio del Puerto http://xxx.xxx.xxx.xx:????
+## Cambio del puerto del servidor web
 
 ```bash
 # En el archivo packege.json, existe una seccion llamada config dentro existe una etiqueta de nombre "porthttp:"
@@ -34,7 +34,7 @@ Aplicacion con el fin de leer el puerto serial (RS232) de una balanza, sus datos
 
 ```
 
-## Api expuesta
+## Salida Json
 
 ```bash
 # Lectura del api, mediante el comando GET
