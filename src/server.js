@@ -1,9 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-// const socket = require('socket.io');
-
-// const dotenv = require('dotenv');
+const dotenv = require('dotenv');
 const cors = require('cors');
 
 const {
@@ -14,6 +12,7 @@ const {
 } = require('./readport');
 
 // initialization
+dotenv.config();
 const serve = express();
 // const iosocket = socket(serve);
 

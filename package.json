@@ -5,8 +5,8 @@
   "license": "MIT",
   "author": "Pedro Obando & Tomás Ortega",
   "scripts": {
-    "dev": "cross-env PORTHTTP=$npm_package_config_porthttp nodemon src/index.js",
-    "start": "cross-env PORTHTTP=$npm_package_config_porthttp node src/index.js",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
     "installapp": "cross-env INSTALL=ON node src/servicesinstall.js",
     "uninstallapp": "cross-env INSTALL=OFF node src/servicesinstall.js",
     "startapp": "cross-env INSTALL=START node src/servicesinstall.js"

@@ -26,12 +26,9 @@ Aplicacion con el fin de leer el puerto serial (RS232) de una balanza, sus datos
 ## Cambio del puerto del servidor web
 
 ```bash
-# En el archivo packege.json, existe una seccion llamada config dentro existe una etiqueta de nombre "porthttp:"
+# En el archivo .env, existe variable llamada PORTHTTP
 
-  "config": {
-    "porthttp": "3010"
-  },
-
+  PORTHTTP = 3010
 ```
 
 ## Salida Json
