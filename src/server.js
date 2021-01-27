@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 // const socket = require('socket.io');
 
-const dotenv = require('dotenv');
+// const dotenv = require('dotenv');
 const cors = require('cors');
 
 const {
@@ -16,11 +16,10 @@ const {
 // initialization
 const serve = express();
 // const iosocket = socket(serve);
-dotenv.config();
 
 // const valoresConfigJson = readDataConfig('./config.json');
 // const thePort = valoresConfigJson.PORTHTTP;
-const thePort = 3000;
+const thePort = process.env.PORTHTTP || 3000;
 
 // const rutaRaizStatic = path.join(__dirname, './html');
 const rutaStaticCss = path.join(__dirname, './public');
@@ -35,8 +34,7 @@ var options = { beautify: true };
 serve.engine('jsx', require('express-react-views').createEngine(options));
 
 let _sendData = undefined;
-// let valorPeso = '';
-// let valorEstable = '';
+let _fechaTomaData = new Date();
 
 const onData = (data) => {
   try {
@@ -51,12 +49,13 @@ const onData = (data) => {
     let reciveData = data.toString();
     reciveData = reciveData.replace(/(\r\n|\n|\r|\=)/gm, '');
     // console.log(reciveData);
-    const valorStr = reciveData.slice(-7);
-    _sendData = { hora: dateString, valorStr, valorNum: parseFloat(valorStr) };
-    console.log(_sendData);
-    // iosocket.emit('sendTara', _sendData);
+    const valor = reciveData.slice(-7);
+    _sendData = { ok: true, hora: dateString, valor };
+    _fechaTomaData = new Date();
+    // console.log(_sendData);
   } catch (error) {
-    console.log(error);
+    _sendData = { ok: false };
+    // console.log(error);
   }
 };
 
@@ -64,13 +63,14 @@ initBalanzaPort(onData);
 
 // routes
 
-serve.use('/pubic', express.static(rutaStaticCss));
+serve.use('/public', express.static(rutaStaticCss));
 
 serve.get('/', (req, res) => {
   try {
     const { selectport } = req.query;
     const initialState = readingData();
-    if (selectport.trim().length >= 2) initialState.BALANZAPORTCOM = selectport;
+
+    if (selectport !== undefined) initialState.BALANZAPORTCOM = selectport;
     res.render('home', { initialState });
   } catch (error) {
     res.redirect('/?selectport=null');
@@ -83,7 +83,6 @@ serve.post('/', (req, res) => {
 
     settingData(BALANZAPORTCOM, BALANZABAUDIOS);
     initBalanzaPort(onData);
-    // res.redirect('back');
     res.redirect(req.get('referer'));
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -91,10 +90,21 @@ serve.post('/', (req, res) => {
 });
 
 serve.get('/read', (req, res) => {
+  let codeStatus = 409;
+  const _noSendData = { ok: false, msg: 'no existes datos' };
   try {
-    res.status(200).json(_sendData);
+    const fechaActual = new Date();
+
+    const resta = fechaActual.getTime() - _fechaTomaData.getTime();
+    if (resta > 1800) {
+      _sendData = _noSendData;
+    } else {
+      codeStatus = 200;
+    }
+    res.status(codeStatus).json(_sendData);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    // console.log(error);
+    res.status(codeStatus).json(_noSendData);
   }
 });
 

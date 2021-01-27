@@ -10,7 +10,7 @@ const puertos = ({ portAll }) => {
           ({ manufacturer, serialNumber, path, pnpId, productId, vendorId }) => {
             return (
               <div className="item" key={path}>
-                <img className="ui avatar image" src="/pubic/comserial.png" />
+                <img className="ui avatar image" src="/public/comserial.png" />
                 <div className="content">
                   <a href={`/?selectport=${path}`} className="ui blue header h3">
                     PORT &nbsp; {path}

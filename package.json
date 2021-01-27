@@ -5,8 +5,8 @@
   "license": "MIT",
   "author": "Pedro Obando & Tomás Ortega",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "node src/index.js",
+    "dev": "cross-env PORTHTTP=3010 nodemon src/index.js",
+    "start": "cross-env PORTHTTP=3010 node src/index.js",
     "installapp": "cross-env INSTALL=ON node src/servicesinstall.js",
     "uninstallapp": "cross-env INSTALL=OFF node src/servicesinstall.js",
     "startapp": "cross-env INSTALL=START node src/servicesinstall.js"
@@ -14,7 +14,6 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-react-views": "^0.11.0",
     "fs-extra": "^9.0.1",

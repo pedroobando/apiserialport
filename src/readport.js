@@ -26,7 +26,7 @@ const initBalanzaPort = (onfncData) => {
     portBaudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
     portName = valoresConfigJson.BALANZAPORTCOM;
     puertoSerial = serialPort(portName, { autoOpen: false, baudRate: portBaudRate });
-    lecturaPuerto = puertoSerial.pipe(new readLineSerial());
+    lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
 
     if (!puertoSerial.isOpen) {
       puertoSerial.open((err) => {
