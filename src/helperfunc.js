@@ -26,7 +26,6 @@ const writeDataConfig = (fileConfig, settingConfig) => {
 
 const schemaConfig = (valueEnt) => {
   return {
-    PORTHTTP: valueEnt.PORTHTTP === undefined ? 3000 : parseInt(valueEnt.PORTHTTP, 10),
     BALANZAPORTCOM:
       valueEnt.BALANZAPORTCOM === undefined ? 'COM1' : valueEnt.BALANZAPORTCOM,
     BALANZABAUDIOS:

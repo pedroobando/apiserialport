@@ -5,10 +5,9 @@ const DefaultLayout = require('./layouts/default');
 
 const home = ({ initialState }) => {
   const [formValues, setFormValues] = useState(initialState);
-  const { PORTHTTP, BALANZABAUDIOS, BALANZAPORTCOM, PORTISOPEN } = formValues;
+  const { BALANZABAUDIOS, BALANZAPORTCOM } = formValues;
 
   const handleInputChange = ({ target }) => {
-    // const value = target.type === 'checkbox' ? target.checked : target.value;
     setFormValues({ ...formValues, [target.name]: target.value });
   };
 
@@ -32,20 +31,6 @@ const home = ({ initialState }) => {
         <div className="ui header">Configuracion</div>
 
         <form method="POST" action="/" className="ui fluid form">
-          {/* <p>Valores del servidor web</p>
-          <div className="inline field">
-            <div className="ui right pointing label">Puerto http</div>
-            <input
-              id="PORTHTTP"
-              type="text"
-              name="PORTHTTP"
-              value={PORTHTTP}
-              onChange={handleInputChange}
-              placeholder="8081 / 8088 / 3000 / 4000 ..."
-            />
-          </div>
-
-          <div className="ui divider"></div> */}
           <p>Valores de comunicacion con la balanza</p>
           <div className="inline field">
             <div className="ui right pointing label">Puerto comunicacion</div>
@@ -69,14 +54,13 @@ const home = ({ initialState }) => {
               onChange={handleInputChange}
             />
           </div>
-
+          <p>Al realizar cualquier cambio, debe presionar [Guardar y aplicar].</p>{' '}
+          <div className="ui divider"></div>
           <button type="submit" className="ui positive basic button">
             Guardar y Aplicar
           </button>
           <button className="ui button">Cancelar</button>
         </form>
-
-        <p>Al realizar cualquier cambio, se debe de arrancar de nuevo el servicio.</p>
       </div>
     </DefaultLayout>
   );

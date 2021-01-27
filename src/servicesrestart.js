@@ -12,19 +12,9 @@ const svc = new Service({
   // script: 'C:\\Users\\pedro\\node\\apiserialport\\src\\index.js',
   script: ruta.join(__dirname, 'index.js'),
   env: {
-    PORT: valoresConfigJson.PORTHTTP,
     BALANZAPORTCOM: valoresConfigJson.BALANZAPORTCOM,
     BALANZABAUDIOS: valoresConfigJson.BALANZABAUDIOS,
   },
-  // env: {
-  //   PORT: 3001,
-  //   BALANZAPORTCOM: 'COM3',
-  //   BALANZABAUDIOS: 9600,
-  // },  
-
-  // nodeOptions: ['--harmony', '--max_old_space_size=4096'],
-  //, workingDirectory: '...'
-  //, allowServiceLogon: true
 });
 
 // Listen for the "install" event, which indicates the
@@ -38,7 +28,7 @@ svc.on('install', function () {
 svc.on('start', () => {
   try {
     console.log('Service starting...');
-    console.log('The service exists: ', svc.exists);
+    console.log('The service starting Now: ', svc.exists);
   } catch (err) {
     console.log(err);
   }
@@ -51,8 +41,8 @@ svc.on('uninstall', () => {
 
 svc.on('stop', () => {
   try {
-  console.log("Service stopped!")
-  console.log('The service exists: ',svc.exists);
+    console.log('Service stopped!');
+    console.log('The service exists: ', svc.exists);
   } catch (err) {
     console.log(err);
   }
@@ -66,9 +56,9 @@ const serviceUninstall = () => {
   svc.uninstall();
 };
 
-const serviceStop =()=>{
+const serviceStop = () => {
   svc.stop();
-}
+};
 
 const serviceStart = () => {
   svc.start();

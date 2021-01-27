@@ -50,11 +50,11 @@ const onData = (data) => {
     reciveData = reciveData.replace(/(\r\n|\n|\r|\=)/gm, '');
     // console.log(reciveData);
     const valor = reciveData.slice(-7);
-    _sendData = { ok: true, hora: dateString, valor };
+    _sendData = { hora: dateString, valor };
     _fechaTomaData = new Date();
     // console.log(_sendData);
   } catch (error) {
-    _sendData = { ok: false };
+    _sendData = {};
     // console.log(error);
   }
 };
@@ -91,7 +91,8 @@ serve.post('/', (req, res) => {
 
 serve.get('/read', (req, res) => {
   let codeStatus = 409;
-  const _noSendData = { ok: false, msg: 'no existes datos' };
+  let statusOk = false;
+  const _noSendData = { msg: 'data not found.' };
   try {
     const fechaActual = new Date();
 
@@ -100,11 +101,12 @@ serve.get('/read', (req, res) => {
       _sendData = _noSendData;
     } else {
       codeStatus = 200;
+      statusOk = true;
     }
-    res.status(codeStatus).json(_sendData);
+    res.status(codeStatus).json({ statusOk, ..._sendData });
   } catch (error) {
     // console.log(error);
-    res.status(codeStatus).json(_noSendData);
+    res.status(codeStatus).json({ statusOk, ..._noSendData });
   }
 });
 
