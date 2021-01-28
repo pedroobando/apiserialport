@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const dotenv = require('dotenv');
+const internalIp = require('internal-ip');
 const cors = require('cors');
 
 const {
@@ -48,7 +49,7 @@ const onData = (data) => {
     let reciveData = data.toString();
     reciveData = reciveData.replace(/(\r\n|\n|\r|\=)/gm, '');
     // console.log(reciveData);
-    const valor = reciveData.slice(-7);
+    const valor = reciveData.slice(-6);
     _sendData = { hora: dateString, valor };
     _fechaTomaData = new Date();
     // console.log(_sendData);
@@ -65,12 +66,16 @@ initBalanzaPort(onData);
 serve.use('/public', express.static(rutaStaticCss));
 
 serve.get('/', (req, res) => {
+  const iplocal = internalIp.v4.sync();
+
   try {
+    // console.log(iplocal);
     const { selectport } = req.query;
     const initialState = readingData();
 
     if (selectport !== undefined) initialState.BALANZAPORTCOM = selectport;
-    res.render('home', { initialState });
+
+    res.render('home', { initialState, iplocal });
   } catch (error) {
     res.redirect('/?selectport=null');
   }

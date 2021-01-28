@@ -3,7 +3,7 @@ const { useState } = require('react');
 
 const DefaultLayout = require('./layouts/default');
 
-const home = ({ initialState }) => {
+const home = ({ initialState, iplocal }) => {
   const [formValues, setFormValues] = useState(initialState);
   const { BALANZABAUDIOS, BALANZAPORTCOM } = formValues;
 
@@ -12,7 +12,7 @@ const home = ({ initialState }) => {
   };
 
   return (
-    <DefaultLayout title="Inicio">
+    <DefaultLayout title="Inicio" iplocal={iplocal}>
       <div className="ui segment">
         <h3 className="ui header">SerialPort</h3>
         <p>

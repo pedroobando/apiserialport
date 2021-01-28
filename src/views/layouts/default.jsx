@@ -11,28 +11,33 @@ function DefaultLayout(props) {
         <title>{props.title}</title>
       </head>
       <body>
-        <nav className="ui menu">
-          <div className="ui container">
-            <div className="header item">Tomas Company</div>
-            <a className="item" href="/">
-              Inicio
-            </a>
-            <a className="item" href="/puertos">
-              Puertos
-            </a>
-            <a className="item" href="/read">
-              Valores Json
-            </a>
-          </div>
-        </nav>
+        <div className="ui container">
+          <nav className="ui top menu">
+            <div className="menu left">
+              <div className="header item">Tomas Company</div>
+              <a className="item" href="/">
+                Inicio
+              </a>
+              <a className="item" href="/puertos">
+                Puertos
+              </a>
+              <a className="item" href="/read">
+                Read Json
+              </a>
+            </div>
+            <div className="right menu">
+              <a className="item" href="">
+                {props.iplocal}
+              </a>
+            </div>
+          </nav>
+        </div>
 
         <main>
           <div className="ui container" style={{ 'marginTop': '05px' }}>
             {props.children}
           </div>
         </main>
-        {/* <script src="/css/jquery.min.js"></script>
-        <script src="/css/semantic.min.js"></script> */}
       </body>
     </html>
   );
