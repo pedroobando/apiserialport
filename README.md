@@ -15,12 +15,20 @@ Aplicacion con el fin de leer el puerto serial (RS232) de una balanza, sus datos
 # Creacion del Contenedor
   $ docker run --name readbalanza -it -d --restart always --privileged -v /dev/ttyACM0:/dev/ttyACM0 -p 3010:3010 readbalanzaimg
 
-# Para windows, se instala como un servicio de windows. creando el nombre de 'Balanza Lector'.
-# Mediante el siguiente comando ejecutado desde consola:
-  npm run installapp
+# Para windows, lo instalaremos mediante el servicio de pm2.
 
-# Para desinstalar el servicio de windows, se realiza mediante el siguiente comando:
-  npm run uninstallapp
+  # Actualizar todos los modulos de npm que usa la aplicacion
+  - \>npm install
+
+  # Crear un archivo startport.bat (con la extension .bat) con el siguiente contenido:
+    cls
+    cd "ruta donde reside la aplicacion"/apiserialport
+    pm2 start src/index.js --name serialport
+
+  # Esto borrara la pantalla, entra en el direcctorio donde reside la aplicacion y el ejecuta el siguite comando pm2 start src/index.js --name serialport
+
+  # El archivo debe ejecutarse al inicial windows (inicio)[https://urbantecno.com/tecnologia/como-abrir-programa-automaticamente-inicio-windows-10]
+
 ```
 
 ## Cambio del puerto del servidor web
