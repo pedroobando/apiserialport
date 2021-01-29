@@ -5,20 +5,12 @@ const dotenv = require('dotenv');
 const internalIp = require('internal-ip');
 const cors = require('cors');
 
-const {
-  initBalanzaPort,
-  allBalanzaPort,
-  settingData,
-  readingData,
-} = require('./readport');
+const { puertoSerialExp, reconnect, allBalanzaPort, settingData } = require('./readport');
 
 // initialization
 dotenv.config();
-const serve = express();
-// const iosocket = socket(serve);
+const serve = new express();
 
-// const valoresConfigJson = readDataConfig('./config.json');
-// const thePort = valoresConfigJson.PORTHTTP;
 const thePort = process.env.PORTHTTP || 3000;
 
 // const rutaRaizStatic = path.join(__dirname, './html');
@@ -52,24 +44,18 @@ const onData = (data) => {
     const valor = reciveData.slice(-6);
     _sendData = { hora: dateString, valor };
     _fechaTomaData = new Date();
-    // console.log(_sendData);
+    console.log(_sendData);
   } catch (error) {
     _sendData = {};
-    // console.log(error);
   }
 };
 
-initBalanzaPort(onData);
-
 // routes
-
 serve.use('/public', express.static(rutaStaticCss));
 
 serve.get('/', (req, res) => {
   const iplocal = internalIp.v4.sync();
-
   try {
-    // console.log(iplocal);
     const { selectport } = req.query;
     const initialState = readingData();
 
@@ -81,12 +67,12 @@ serve.get('/', (req, res) => {
   }
 });
 
-serve.post('/', (req, res) => {
+serve.post('/', async (req, res) => {
   try {
     const { BALANZABAUDIOS, BALANZAPORTCOM } = req.body;
+    await settingData(BALANZAPORTCOM, BALANZABAUDIOS);
+    await reconnect(onData);
 
-    settingData(BALANZAPORTCOM, BALANZABAUDIOS);
-    initBalanzaPort(onData);
     res.redirect(req.get('referer'));
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -109,17 +95,16 @@ serve.get('/read', (req, res) => {
     }
     res.status(codeStatus).json({ statusOk, ..._sendData });
   } catch (error) {
-    // console.log(error);
     res.status(codeStatus).json({ statusOk, ..._noSendData });
   }
 });
 
 serve.get('/puertos', (req, res) => {
+  const iplocal = internalIp.v4.sync();
   try {
     const portAll = allBalanzaPort();
     portAll.then((item) => {
-      // console.log(item);
-      res.status(200).render('puertos', { portAll: item });
+      res.status(200).render('puertos', { portAll: item, iplocal });
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -130,4 +115,99 @@ serve.use(function (req, res, next) {
   res.status(404).send('Lo siento no encuentro la ruta..!');
 });
 
-module.exports = { serve, thePort };
+// const serialPort = require('serialport');
+// const readLineSerial = require('@serialport/parser-readline');
+
+// const { readDataConfig, writeDataConfig } = require('./helperfunc');
+
+// const nameFileConfig = './config.json';
+
+// let valoresConfigJson = undefined;
+// let portBaudRate = undefined;
+// let portName = undefined;
+// let puertoSerial = undefined; //new serialPort('COM1', { baudRate: 9600, autoOpen: false });
+// let lecturaPuerto = undefined;
+
+// const reconnect = async (onfncData) => {
+//   puertoSerial !== undefined && puertoSerial.close((retval) => {});
+
+//   valoresConfigJson = readDataConfig(nameFileConfig);
+//   portBaudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
+//   portName = valoresConfigJson.BALANZAPORTCOM;
+
+//   puertoSerial = new serialPort(portName, {
+//     autoOpen: false,
+//     baudRate: portBaudRate,
+//   });
+
+//   if (!puertoSerial.isOpen) {
+//     puertoSerial.on('open', (retval) => {});
+
+//     puertoSerial.on('close', (retval) => {
+//       lecturaPuerto.on('data', () => null);
+//     });
+
+//     puertoSerial.open((err) => {
+//       if (err === null) {
+//         console.log(`Puerto ABIERTO`);
+//         lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
+//         lecturaPuerto.on('data', onfncData);
+//       } else {
+//         console.log(`Puerto CERRADO ${portName}.. re-abriendo en 3sec.`);
+//         setTimeout(() => reconnect(onfncData), 3000);
+//       }
+//     });
+//   }
+// };
+
+// const closePort = () => {
+//   puertoSerial.close((retval) => {
+//     console.log(`cerrar el puerto ${retval}`);
+//   });
+// };
+
+// const settingData = async (BALANZAPORTCOM, BALANZABAUDIOS) => {
+//   try {
+//     await writeDataConfig(nameFileConfig, { BALANZAPORTCOM, BALANZABAUDIOS });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+
+// const readingData = () => {
+//   return { ...valoresConfigJson, PORTISOPEN: puertoSerial.isOpen };
+// };
+
+// const allBalanzaPort = () => {
+//   return serialPort.list().then((ports) => {
+//     return [...ports];
+//   });
+// };
+
+// process.stdin.resume(); //so the program will not close instantly
+
+// const exitHandler = (options, exitCode) => {
+//   if (options.cleanup) {
+//     console.log('clean');
+//     puertoSerialExp() !== undefined && puertoSerialExp().close((retval) => {});
+//   }
+//   if (exitCode || exitCode === 0) console.log(exitCode);
+//   if (options.exit) process.exit();
+// };
+
+// //do something when app is closing
+// process.on('exit', exitHandler.bind(null, { cleanup: true }));
+
+// //catches ctrl+c event
+// process.on('SIGINT', exitHandler.bind(null, { exit: true }));
+
+// // catches "kill pid" (for example: nodemon restart)
+// process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));
+// process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
+
+// //catches uncaught exceptions
+// process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
+
+reconnect(onData);
+
+module.exports = { serve, thePort, puertoSerialExp };

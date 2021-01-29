@@ -1,9 +1,9 @@
 const React = require('react');
 const DefaultLayout = require('./layouts/default');
 
-const puertos = ({ portAll }) => {
+const puertos = ({ portAll, iplocal }) => {
   return (
-    <DefaultLayout title="Puertos">
+    <DefaultLayout title="Puertos" iplocal={iplocal}>
       <h1>Muestra todos los puertos</h1>
       <div className="ui list">
         {portAll.map(

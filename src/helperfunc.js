@@ -3,21 +3,17 @@ const fs = require('fs-extra');
 const readDataConfig = (fileConfig) => {
   try {
     const fileJson = fs.readJsonSync(fileConfig);
-    // console.log(fileJson);
     return fileJson;
-    // return fs.readJson(fileConfig);
   } catch (error) {
     console.log(`error de lectura ${fileConfig}`);
     return writeDataConfig(fileConfig, { 'hola': 111 });
   }
 };
 
-const writeDataConfig = (fileConfig, settingConfig) => {
+const writeDataConfig = async (fileConfig, settingConfig) => {
   try {
     const dataToWrite = schemaConfig(settingConfig);
-    // console.log(fileConfig, dataToWrite);
-    fs.writeJsonSync(fileConfig, dataToWrite);
-    // console.log(dataToWrite);
+    await fs.writeJson(fileConfig, dataToWrite);
     return dataToWrite;
   } catch (error) {
     console.log(`error de escritura ${fileConfig}`);

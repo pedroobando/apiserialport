@@ -1,6 +1,5 @@
 const serialPort = require('serialport');
 const readLineSerial = require('@serialport/parser-readline');
-
 const { readDataConfig, writeDataConfig } = require('./helperfunc');
 
 const nameFileConfig = './config.json';
@@ -8,70 +7,49 @@ const nameFileConfig = './config.json';
 let valoresConfigJson = undefined;
 let portBaudRate = undefined;
 let portName = undefined;
-let puertoSerial = undefined;
+let puertoSerial = undefined; //new serialPort('COM1', { baudRate: 9600, autoOpen: false });
 let lecturaPuerto = undefined;
 
-const initBalanzaPort = (onfncData) => {
+const puertoSerialExp = () => puertoSerial;
+
+const reconnect = async (onfncData) => {
+  puertoSerial !== undefined && puertoSerial.close((retval) => {});
+
   valoresConfigJson = readDataConfig(nameFileConfig);
-  try {
-    if (puertoSerial !== undefined) {
-      puertoSerial.isOpen &&
-        puertoSerial.close((err) => {
-          if (err !== null) {
-            console.log('puerto cerrado');
-          }
-        });
-    }
+  portBaudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
+  portName = valoresConfigJson.BALANZAPORTCOM;
 
-    portBaudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
-    portName = valoresConfigJson.BALANZAPORTCOM;
-    puertoSerial = serialPort(portName, { autoOpen: false, baudRate: portBaudRate });
-    lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
+  puertoSerial = new serialPort(portName, {
+    autoOpen: false,
+    baudRate: portBaudRate,
+  });
 
-    if (!puertoSerial.isOpen) {
-      puertoSerial.open((err) => {
-        if (err === null) {
-          console.log(`Puerto ABIERTO`);
-          lecturaPuerto.on('data', onfncData);
-        } else {
-          console.log(`Puerto CERRADO ${portName}`);
-          lecturaPuerto.on('data', () => console.log('cerrado'));
-          puertoSerial == undefined;
-        }
-      });
-    }
+  if (!puertoSerial.isOpen) {
+    puertoSerial.on('open', (retval) => {});
 
-    // console.log({
-    //   path: puertoSerial.path,
-    //   setting: puertoSerial.settings,
-    //   opening: puertoSerial.opening,
-    //   closing: puertoSerial.closing,
-    // });
-  } catch (error) {
-    console.error(`Error open ${error}, Equipo: ${portName}, baudRate: ${portBaudRate}`);
+    puertoSerial.on('close', (retval) => {
+      lecturaPuerto.on('data', () => null);
+    });
+
+    puertoSerial.open((err) => {
+      if (err === null) {
+        console.log(`Puerto ABIERTO`);
+        lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
+        lecturaPuerto.on('data', onfncData);
+      } else {
+        console.log(`Puerto CERRADO ${portName}.. re-abriendo en 3sec.`);
+        setTimeout(() => reconnect(onfncData), 3000);
+      }
+    });
   }
 };
 
-const dataBalanzaPort = (onData) => {
+const settingData = async (BALANZAPORTCOM, BALANZABAUDIOS) => {
   try {
-    lecturaPuerto.on('data', onData);
-  } catch (error) {
-    console.error(
-      `Error lectura ${error}, Equipo: ${portName}, baudRate: ${portBaudRate}`
-    );
-  }
-};
-
-const settingData = (BALANZAPORTCOM, BALANZABAUDIOS) => {
-  try {
-    writeDataConfig(nameFileConfig, { BALANZAPORTCOM, BALANZABAUDIOS });
+    await writeDataConfig(nameFileConfig, { BALANZAPORTCOM, BALANZABAUDIOS });
   } catch (error) {
     console.log(error);
   }
-};
-
-const readingData = () => {
-  return { ...valoresConfigJson, PORTISOPEN: puertoSerial.isOpen };
 };
 
 const allBalanzaPort = () => {
@@ -81,10 +59,8 @@ const allBalanzaPort = () => {
 };
 
 module.exports = {
-  puertoSerial,
-  initBalanzaPort,
-  dataBalanzaPort,
+  puertoSerialExp,
+  reconnect,
   allBalanzaPort,
   settingData,
-  readingData,
 };
