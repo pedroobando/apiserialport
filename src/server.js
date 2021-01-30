@@ -64,13 +64,11 @@ serve.get('/', (req, res) => {
   try {
     const { selectport } = req.query;
     const initialState = readingData();
-    console.log(selectport);
 
     if (selectport !== undefined) initialState.BALANZAPORTCOM = selectport;
-
     res.render('home', { initialState, iplocal });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.redirect('/?selectport=null');
   }
 });
@@ -122,99 +120,6 @@ serve.get('/puertos', (req, res) => {
 serve.use(function (req, res, next) {
   res.status(404).send('Lo siento no encuentro la ruta..!');
 });
-
-// const serialPort = require('serialport');
-// const readLineSerial = require('@serialport/parser-readline');
-
-// const { readDataConfig, writeDataConfig } = require('./helperfunc');
-
-// const nameFileConfig = './config.json';
-
-// let valoresConfigJson = undefined;
-// let portBaudRate = undefined;
-// let portName = undefined;
-// let puertoSerial = undefined; //new serialPort('COM1', { baudRate: 9600, autoOpen: false });
-// let lecturaPuerto = undefined;
-
-// const reconnect = async (onfncData) => {
-//   puertoSerial !== undefined && puertoSerial.close((retval) => {});
-
-//   valoresConfigJson = readDataConfig(nameFileConfig);
-//   portBaudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
-//   portName = valoresConfigJson.BALANZAPORTCOM;
-
-//   puertoSerial = new serialPort(portName, {
-//     autoOpen: false,
-//     baudRate: portBaudRate,
-//   });
-
-//   if (!puertoSerial.isOpen) {
-//     puertoSerial.on('open', (retval) => {});
-
-//     puertoSerial.on('close', (retval) => {
-//       lecturaPuerto.on('data', () => null);
-//     });
-
-//     puertoSerial.open((err) => {
-//       if (err === null) {
-//         console.log(`Puerto ABIERTO`);
-//         lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
-//         lecturaPuerto.on('data', onfncData);
-//       } else {
-//         console.log(`Puerto CERRADO ${portName}.. re-abriendo en 3sec.`);
-//         setTimeout(() => reconnect(onfncData), 3000);
-//       }
-//     });
-//   }
-// };
-
-// const closePort = () => {
-//   puertoSerial.close((retval) => {
-//     console.log(`cerrar el puerto ${retval}`);
-//   });
-// };
-
-// const settingData = async (BALANZAPORTCOM, BALANZABAUDIOS) => {
-//   try {
-//     await writeDataConfig(nameFileConfig, { BALANZAPORTCOM, BALANZABAUDIOS });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-// const readingData = () => {
-//   return { ...valoresConfigJson, PORTISOPEN: puertoSerial.isOpen };
-// };
-
-// const allBalanzaPort = () => {
-//   return serialPort.list().then((ports) => {
-//     return [...ports];
-//   });
-// };
-
-// process.stdin.resume(); //so the program will not close instantly
-
-// const exitHandler = (options, exitCode) => {
-//   if (options.cleanup) {
-//     console.log('clean');
-//     puertoSerialExp() !== undefined && puertoSerialExp().close((retval) => {});
-//   }
-//   if (exitCode || exitCode === 0) console.log(exitCode);
-//   if (options.exit) process.exit();
-// };
-
-// //do something when app is closing
-// process.on('exit', exitHandler.bind(null, { cleanup: true }));
-
-// //catches ctrl+c event
-// process.on('SIGINT', exitHandler.bind(null, { exit: true }));
-
-// // catches "kill pid" (for example: nodemon restart)
-// process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));
-// process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
-
-// //catches uncaught exceptions
-// process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
 
 reconnect(onData);
 
