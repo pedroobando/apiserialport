@@ -60,7 +60,7 @@ const onData = (data) => {
 serve.use('/public', express.static(rutaStaticCss));
 
 serve.get('/', (req, res) => {
-  // const iplocal = internalIp.v4.sync();
+  const iplocal = internalIp.v4.sync();
   try {
     const { selectport } = req.query;
     const initialState = readingData();
@@ -68,7 +68,7 @@ serve.get('/', (req, res) => {
 
     if (selectport !== undefined) initialState.BALANZAPORTCOM = selectport;
 
-    res.render('home', { initialState, iplocal: 22 });
+    res.render('home', { initialState, iplocal });
   } catch (error) {
     console.log(error);
     res.redirect('/?selectport=null');
