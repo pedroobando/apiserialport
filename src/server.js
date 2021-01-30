@@ -5,7 +5,13 @@ const dotenv = require('dotenv');
 const internalIp = require('internal-ip');
 const cors = require('cors');
 
-const { puertoSerialExp, reconnect, allBalanzaPort, settingData } = require('./readport');
+const {
+  puertoSerialExp,
+  reconnect,
+  allBalanzaPort,
+  settingData,
+  readingData,
+} = require('./readport');
 
 // initialization
 dotenv.config();
@@ -44,7 +50,7 @@ const onData = (data) => {
     const valor = reciveData.slice(-6);
     _sendData = { hora: dateString, valor };
     _fechaTomaData = new Date();
-    console.log(_sendData);
+    // console.log(_sendData);
   } catch (error) {
     _sendData = {};
   }
@@ -54,15 +60,17 @@ const onData = (data) => {
 serve.use('/public', express.static(rutaStaticCss));
 
 serve.get('/', (req, res) => {
-  const iplocal = internalIp.v4.sync();
+  // const iplocal = internalIp.v4.sync();
   try {
     const { selectport } = req.query;
     const initialState = readingData();
+    console.log(selectport);
 
     if (selectport !== undefined) initialState.BALANZAPORTCOM = selectport;
 
-    res.render('home', { initialState, iplocal });
+    res.render('home', { initialState, iplocal: 22 });
   } catch (error) {
+    console.log(error);
     res.redirect('/?selectport=null');
   }
 });

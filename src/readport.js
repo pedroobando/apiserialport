@@ -44,6 +44,10 @@ const reconnect = async (onfncData) => {
   }
 };
 
+const readingData = () => {
+  return { ...valoresConfigJson, PORTISOPEN: puertoSerial.isOpen };
+};
+
 const settingData = async (BALANZAPORTCOM, BALANZABAUDIOS) => {
   try {
     await writeDataConfig(nameFileConfig, { BALANZAPORTCOM, BALANZABAUDIOS });
@@ -62,5 +66,6 @@ module.exports = {
   puertoSerialExp,
   reconnect,
   allBalanzaPort,
+  readingData,
   settingData,
 };
