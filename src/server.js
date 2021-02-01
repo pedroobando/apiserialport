@@ -83,7 +83,7 @@ serve.post('/', async (req, res) => {
   }
 });
 
-serve.get('/read', (req, res) => {
+serve.get('/api/read', (req, res) => {
   let codeStatus = 409;
   let statusOk = false;
   const _noSendData = { message: 'data not found.' };

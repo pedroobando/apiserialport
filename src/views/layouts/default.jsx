@@ -21,7 +21,7 @@ function DefaultLayout(props) {
               <a className="item" href="/puertos">
                 Puertos
               </a>
-              <a className="item" href="/read">
+              <a className="item" href="/api/read">
                 Read Json
               </a>
             </div>
