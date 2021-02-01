@@ -7,10 +7,11 @@ const cors = require('cors');
 
 const {
   puertoSerialExp,
-  reconnect,
   allBalanzaPort,
-  settingData,
   readingData,
+  openPort,
+  openPortNew,
+  closePort,
 } = require('./readport');
 
 // initialization
@@ -46,11 +47,9 @@ const onData = (data) => {
 
     let reciveData = data.toString();
     reciveData = reciveData.replace(/(\r\n|\n|\r|\=)/gm, '');
-    // console.log(reciveData);
     const valor = reciveData.slice(-6);
     _sendData = { hora: dateString, valor };
     _fechaTomaData = new Date();
-    // console.log(_sendData);
   } catch (error) {
     _sendData = {};
   }
@@ -68,7 +67,7 @@ serve.get('/', (req, res) => {
     if (selectport !== undefined) initialState.BALANZAPORTCOM = selectport;
     res.render('home', { initialState, iplocal });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     res.redirect('/?selectport=null');
   }
 });
@@ -76,9 +75,8 @@ serve.get('/', (req, res) => {
 serve.post('/', async (req, res) => {
   try {
     const { BALANZABAUDIOS, BALANZAPORTCOM } = req.body;
-    await settingData(BALANZAPORTCOM, BALANZABAUDIOS);
-    await reconnect(onData);
-
+    _sendData = { message: 'data not found.' };
+    resultPort = await openPortNew(BALANZAPORTCOM, parseInt(BALANZABAUDIOS, 10), onData);
     res.redirect(req.get('referer'));
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -88,7 +86,7 @@ serve.post('/', async (req, res) => {
 serve.get('/read', (req, res) => {
   let codeStatus = 409;
   let statusOk = false;
-  const _noSendData = { msg: 'data not found.' };
+  const _noSendData = { message: 'data not found.' };
   try {
     const fechaActual = new Date();
 
@@ -117,10 +115,39 @@ serve.get('/puertos', (req, res) => {
   }
 });
 
+serve.post('/api/open', async (req, res) => {
+  let resultPort = {};
+  try {
+    const { portName, baudRate } = req.body;
+
+    if (portName !== undefined) {
+      resultPort = await openPortNew(portName, parseInt(baudRate, 10), onData);
+    } else {
+      resultPort = await openPort(onData);
+    }
+    res.status(201).json(resultPort);
+  } catch (error) {
+    res.status(500).json({ statusOk: false, message: error });
+  }
+});
+
+serve.get('/api/close', async (req, res) => {
+  try {
+    const resultPort = closePort();
+    res.status(201).json(resultPort);
+  } catch (error) {
+    res.status(500).json({ statusOk: false, message: error });
+  }
+});
+
 serve.use(function (req, res, next) {
   res.status(404).send('Lo siento no encuentro la ruta..!');
 });
 
-reconnect(onData);
+const start = async () => {
+  await openPort(onData);
+};
+
+// start();
 
 module.exports = { serve, thePort, puertoSerialExp };
