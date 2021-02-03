@@ -6,6 +6,7 @@
   "author": "Pedro Obando & Tomás Ortega",
   "scripts": {
     "dev": "nodemon src/index.js",
+    "devv": "nodemon src/indextmp.js",
     "start": "node src/index.js",
     "installapp": "cross-env INSTALL=ON node src/servicesinstall.js",
     "uninstallapp": "cross-env INSTALL=OFF node src/servicesinstall.js",

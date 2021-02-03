@@ -83,25 +83,25 @@ serve.post('/', async (req, res) => {
   }
 });
 
-serve.get('/api/read', (req, res) => {
-  let codeStatus = 409;
-  let statusOk = false;
-  const _noSendData = { message: 'data not found.' };
-  try {
-    const fechaActual = new Date();
+// serve.get('/api/read', (req, res) => {
+//   let codeStatus = 409;
+//   let statusOk = false;
+//   const _noSendData = { message: 'data not found.' };
+//   try {
+//     const fechaActual = new Date();
 
-    const resta = fechaActual.getTime() - _fechaTomaData.getTime();
-    if (resta > 1800) {
-      _sendData = _noSendData;
-    } else {
-      codeStatus = 200;
-      statusOk = true;
-    }
-    res.status(codeStatus).json({ statusOk, ..._sendData });
-  } catch (error) {
-    res.status(codeStatus).json({ statusOk, ..._noSendData });
-  }
-});
+//     const resta = fechaActual.getTime() - _fechaTomaData.getTime();
+//     if (resta > 1800) {
+//       _sendData = _noSendData;
+//     } else {
+//       codeStatus = 200;
+//       statusOk = true;
+//     }
+//     res.status(codeStatus).json({ statusOk, ..._sendData });
+//   } catch (error) {
+//     res.status(codeStatus).json({ statusOk, ..._noSendData });
+//   }
+// });
 
 serve.get('/puertos', (req, res) => {
   const iplocal = internalIp.v4.sync();
