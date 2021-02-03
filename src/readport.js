@@ -3,10 +3,7 @@ const readLineSerial = require('@serialport/parser-readline');
 const { readDataConfig, writeDataConfig } = require('./helperfunc');
 
 const nameFileConfig = './config.json';
-// let oldPortName = undefined;
 let valoresConfigJson = undefined;
-// let portBaudRate = undefined;
-// let portName = undefined;
 var puertoSerial = undefined; //new serialPort('COM1', { baudRate: 9600, autoOpen: false });
 var lecturaPuerto = undefined;
 
