@@ -29,8 +29,8 @@ serve.use(bodyParser.urlencoded({ extended: true }));
 
 serve.set('views', __dirname + '/views');
 serve.set('view engine', 'jsx');
-var options = { beautify: true };
-serve.engine('jsx', require('express-react-views').createEngine(options));
+// var options = { beautify: true };
+serve.engine('jsx', require('express-react-views').createEngine({ beautify: true }));
 
 let _sendData = undefined;
 let _fechaTomaData = new Date();
@@ -83,25 +83,25 @@ serve.post('/', async (req, res) => {
   }
 });
 
-// serve.get('/api/read', (req, res) => {
-//   let codeStatus = 409;
-//   let statusOk = false;
-//   const _noSendData = { message: 'data not found.' };
-//   try {
-//     const fechaActual = new Date();
+serve.get('/api/read', (req, res) => {
+  let codeStatus = 409;
+  let statusOk = false;
+  const _noSendData = { message: 'data not found.' };
+  try {
+    const fechaActual = new Date();
 
-//     const resta = fechaActual.getTime() - _fechaTomaData.getTime();
-//     if (resta > 1800) {
-//       _sendData = _noSendData;
-//     } else {
-//       codeStatus = 200;
-//       statusOk = true;
-//     }
-//     res.status(codeStatus).json({ statusOk, ..._sendData });
-//   } catch (error) {
-//     res.status(codeStatus).json({ statusOk, ..._noSendData });
-//   }
-// });
+    const resta = fechaActual.getTime() - _fechaTomaData.getTime();
+    if (resta > 1800) {
+      _sendData = _noSendData;
+    } else {
+      codeStatus = 200;
+      statusOk = true;
+    }
+    res.status(codeStatus).json({ statusOk, ..._sendData });
+  } catch (error) {
+    res.status(codeStatus).json({ statusOk, ..._noSendData });
+  }
+});
 
 serve.get('/puertos', (req, res) => {
   const iplocal = internalIp.v4.sync();
@@ -115,25 +115,43 @@ serve.get('/puertos', (req, res) => {
   }
 });
 
-serve.post('/api/open', async (req, res) => {
-  let resultPort = {};
+// serve.post('/api/open', async (req, res) => {
+//   let resultPort = {};
+//   try {
+//     const { portName, baudRate } = req.body;
+
+//     if (portName !== undefined) {
+//       resultPort = await openPortNew(portName, parseInt(baudRate, 10), onData);
+//     } else {
+//       resultPort = await openPort(onData);
+//     }
+//     res.status(201).json(resultPort);
+//   } catch (error) {
+//     res.status(500).json({ statusOk: false, message: error });
+//   }
+// });
+
+serve.get('/api/open', async (req, res) => {
+  var resultPort = {};
   try {
-    const { portName, baudRate } = req.body;
+    const { portName, baudRate } = req.query;
 
     if (portName !== undefined) {
       resultPort = await openPortNew(portName, parseInt(baudRate, 10), onData);
     } else {
       resultPort = await openPort(onData);
     }
+    console.log(resultPort);
     res.status(201).json(resultPort);
   } catch (error) {
     res.status(500).json({ statusOk: false, message: error });
   }
 });
 
-serve.get('/api/close', async (req, res) => {
+serve.get('/api/close', (req, res) => {
   try {
     const resultPort = closePort();
+    console.log(resultPort);
     res.status(201).json(resultPort);
   } catch (error) {
     res.status(500).json({ statusOk: false, message: error });
@@ -144,9 +162,9 @@ serve.use(function (req, res, next) {
   res.status(404).send('Lo siento no encuentro la ruta..!');
 });
 
-const start = async () => {
-  await openPort(onData);
-};
+// const start = async () => {
+//   await openPort(onData);
+// };
 
 // start();
 

@@ -3,54 +3,17 @@ const readLineSerial = require('@serialport/parser-readline');
 const { readDataConfig, writeDataConfig } = require('./helperfunc');
 
 const nameFileConfig = './config.json';
-let oldPortName = undefined;
+// let oldPortName = undefined;
 let valoresConfigJson = undefined;
-let portBaudRate = undefined;
-let portName = undefined;
-let puertoSerial = undefined; //new serialPort('COM1', { baudRate: 9600, autoOpen: false });
-let lecturaPuerto = undefined;
+// let portBaudRate = undefined;
+// let portName = undefined;
+var puertoSerial = undefined; //new serialPort('COM1', { baudRate: 9600, autoOpen: false });
+var lecturaPuerto = undefined;
 
 const puertoSerialExp = () => puertoSerial;
 
-// const reconnect = async (onfncData) => {
-//   puertoSerial !== undefined &&
-//     puertoSerial.close((retval) => {
-//       if (retval === null) console.log(`Cerrando Puerto: ${oldPortName}`);
-//     });
-
-//   valoresConfigJson = readDataConfig(nameFileConfig);
-//   portBaudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
-//   portName = valoresConfigJson.BALANZAPORTCOM;
-
-//   puertoSerial = new serialPort(portName, {
-//     autoOpen: false,
-//     baudRate: portBaudRate,
-//   });
-
-//   if (!puertoSerial.isOpen) {
-//     puertoSerial.on('open', (retval) => {});
-
-//     puertoSerial.on('close', (retval) => {
-//       lecturaPuerto.on('data', () => null);
-//     });
-
-//     puertoSerial.open((err) => {
-//       if (err === null) {
-//         console.log(`Puerto ABIERTO => ${portName}`);
-//         lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
-//         lecturaPuerto.on('data', onfncData);
-//         oldPortName = portName;
-//       } else {
-//         console.log(`Puerto CERRADO => ${portName}`);
-//         // console.log(`Puerto CERRADO ${portName}.. re-abriendo en 3sec.`);
-//         // setTimeout(() => reconnect(onfncData), 3000);
-//       }
-//     });
-//   }
-// };
-
 const openPort = async (onfncData) => {
-  let retvalport = { ok: false, message: `Puerto CERRADO` };
+  var retvalport = { ok: false, message: `Puerto CERRADO` };
   try {
     const valoresConfigJson = await readDataConfig(nameFileConfig);
     const portBaudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
@@ -68,7 +31,7 @@ const openPortNew = async (
   portBaudRate = 9600,
   onfncData = () => {}
 ) => {
-  let retvalport = { ok: false, message: `PUERTO  - CERRADO` };
+  var retvalport = { ok: false, message: `PUERTO  - CERRADO` };
   try {
     retvalport = closePort();
     portBaudRate = parseInt(portBaudRate, 10);
@@ -76,6 +39,9 @@ const openPortNew = async (
     puertoSerial = serialPort(portName, {
       autoOpen: false,
       baudRate: portBaudRate,
+      dataBits: 8,
+      stopBits: 1,
+      parity: 'none',
     });
 
     if (!puertoSerial.isOpen) {
@@ -86,13 +52,16 @@ const openPortNew = async (
       });
       retvalport = { ok: false, message: `ABRIENDO PUERTO ${portName}` };
 
-      await puertoSerial.open((err) => {
-        if (err === null) {
+      puertoSerial.open((err) => {
+        if (!err) {
           lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
           lecturaPuerto.on('data', onfncData);
+          return { ok: true, message: `PUERTO CAPTURADO ${portName}` };
+        } else {
+          return { ok: false, message: `PUERTO NO CAPTURADO ${portName}` };
         }
       });
-      retvalport = { ok: true, message: `PUERTO CAPTURADO ${portName}` };
+      retvalport = { ok: true, message: `ABRIENDO PUERTO ${portName}` };
     }
   } catch (error) {
     retvalport = { ok: false, message: `Puerto CERRADO - Error ${error}` };
@@ -101,16 +70,15 @@ const openPortNew = async (
 };
 
 const closePort = () => {
-  let retvalport = { ok: false, message: `PUERTO CERRADO` };
+  var retvalport = { ok: true, message: `PUERTO CERRADO` };
   try {
     puertoSerial !== undefined &&
       puertoSerial.close((retval) => {
-        if (retval !== null) retvalport = { ok: true, message: `PUERTO NO CERRADO` };
+        retvalport = { ok: !retval, message: `PUERTO CERRADO` };
       });
   } catch (error) {
     retvalport = { ok: false, message: `PUERTO NO CERRADO - Error ${Error}` };
   }
-  // console.log(retvalport);
   return retvalport;
 };
 
@@ -134,10 +102,8 @@ const allBalanzaPort = () => {
 
 module.exports = {
   puertoSerialExp,
-  // reconnect,
   allBalanzaPort,
   readingData,
-  // settingData,
   closePort,
   openPort,
   openPortNew,

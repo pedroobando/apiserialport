@@ -12,7 +12,7 @@ const readPort = () => {
       if (err) {
         return console.log('Error opening port: ', err.message);
       }
-      port.write('main screen tourn on');
+      // port.write('main screen tourn on');
       // const lecturaPuerto = port.pipe(new readLineSerial({ delimiter: '\r\n' }));
 
       // lecturaPuerto.on('data', (listener) => {
@@ -35,6 +35,9 @@ const readPort = () => {
     const lineStream = port.pipe(new Readline());
     lineStream.on('data', (data) => {
       console.log(data);
+      port.close((err) => {
+        if (err) console.log(`${err.message}`);
+      });
     });
 
     // port.on('data', function (data) {
@@ -43,8 +46,14 @@ const readPort = () => {
 
     // port.close();
     // res.status(200).json({ statusOk: true });
+    // port.close((err) => {
+    //   if (err) console.log(`. ${err.message}`);
+    // });
   } catch (error) {
-    console.log(error);
+    port.close((err) => {
+      if (err) console.log(`.. ${err.message}`);
+    });
+    // console.log(error);
   }
 };
 
