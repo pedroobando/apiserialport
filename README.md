@@ -4,33 +4,6 @@
 
 Aplicacion con el fin de leer el puerto serial (RS232) de una balanza, sus datos son capturados para luego ser mostrados en un servidor web mediante http, con el comando GET.
 
-## Modo de instalacion
-
-```bash
-# Para linux, se puede creear o instalar mediante un contenedor Docker
-
-# Creacion de la imagen
-  $ docker build -t readbalanzaimg .
-
-# Creacion del Contenedor
-  $ docker run --name readbalanza -it -d --restart always --privileged -v /dev/ttyACM0:/dev/ttyACM0 -p 3010:3010 readbalanzaimg
-
-# Para windows, lo instalaremos mediante el servicio de pm2.
-
-  # Actualizar todos los modulos de npm que usa la aplicacion
-  - \>npm install
-
-  # Crear un archivo startport.bat (con la extension .bat) con el siguiente contenido:
-    cls
-    cd "ruta donde reside la aplicacion"/apiserialport
-    pm2 start src/index.js --name serialport
-
-  # Esto borrara la pantalla, entra en el direcctorio donde reside la aplicacion y el ejecuta el siguite comando pm2 start src/index.js --name serialport
-
-  # El archivo debe ejecutarse al inicial windows (inicio)[https://urbantecno.com/tecnologia/como-abrir-programa-automaticamente-inicio-windows-10]
-
-```
-
 ## Cambio del puerto del servidor web
 
 ```bash
@@ -39,29 +12,79 @@ Aplicacion con el fin de leer el puerto serial (RS232) de una balanza, sus datos
   PORTHTTP = 3010
 ```
 
-## Salida Json
+## Instalacion de la aplicacion
+
+### Es montada en memoria con [pm2](https://pm2.keymetrics.io/)
 
 ```bash
-# Lectura del api, mediante el comando GET
-  http:[IP]:[puerto]/read
+  pm2 start src/index.js --name serialport
+  pm2 save --force
+```
 
-  http://172.1.1.0:3010/read
+### Al reiniciar el equipo (windows) y desea ejecutarla en memoria de nuevo
 
-# Valor de salida un JSON con el siguiente formato:
+```bash
+  pm2 resurrect
+```
 
-# Si la peticion tiene exito o el puerto seleccionado contiene data, envia un codigo 200 y el siguiente json.
-{
+### Desintalar la aplicacion o quitar de memoria.
+
+```bash
+  pm2 delete serialport
+  pm2 save --force
+```
+
+Nota: Mayor informacion de [PM2 en su apartado o documentacion](https://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/).
+
+## Salida Json o Metodos
+
+### Abrir un puerto especifico
+
+Todos los metodos son ejecutado, mediante el comando GET
+
+```bash
+  http://172.1.1.0:3010/api/open?portName=COM1&baudRate=9600
+
+  # Al abrir un puerto especifico este es guardado automaticamente y la proxima llamada del metodo, no hace falta especificarlo.
+```
+
+### Abrir un puerto guardado
+
+```bash
+  http://172.1.1.0:3010/api/open
+```
+
+### Lectura los datos
+
+```bash
+  http:[IP]/api/read
+
+  http://172.1.1.0:3010/api/read
+
+  # Valor de salida un JSON con el siguiente formato:
+
+  # Si la peticion tiene exito o el puerto seleccionado contiene data, envia un codigo 200 y el siguiente json.
+
+  {
   "statusOk": true,
   "hora": "16:52:33",
   "valor": "1291.57"
-}
+  }
 
-# Si la peticion tiene falla o el puerto seleccionado no contiene data, envia un codigo 409 y el siguiente json.
-{
+  # Si la peticion tiene falla o el puerto seleccionado no contiene data, envia un codigo 409 y el siguiente json.
+
+  {
   "statusOk": false,
   "msg": "data not found."
-}
+  }
+```
 
+### Cerrar puerto
+
+```bash
+  http://172.1.1.0:3010/api/close
+
+  # Cierra automaticamente el puerto guardado o puerto activo si lo ubiese.
 ```
 
 ## Guia Docker
