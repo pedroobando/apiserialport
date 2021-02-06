@@ -30,7 +30,7 @@ const openPortNew = async (
 ) => {
   var retvalport = { ok: false, message: `PUERTO  - CERRADO` };
   try {
-    retvalport = closePort();
+    // retvalport = closePort();
     portBaudRate = parseInt(portBaudRate, 10);
     await settingData(portName, portBaudRate);
     puertoSerial = serialPort(portName, {
@@ -41,26 +41,53 @@ const openPortNew = async (
       parity: 'none',
     });
 
-    if (!puertoSerial.isOpen) {
-      puertoSerial.on('open', (retval) => {});
+    puertoSerial.on('open', (retval) => {
+      console.log('port Opened');
 
-      puertoSerial.on('close', (retval) => {
-        lecturaPuerto.on('data', () => null);
-      });
-      retvalport = { ok: false, message: `ABRIENDO PUERTO ${portName}` };
+      process.stdin.resume();
+      process.stdin.setEncoding('utf-8');
 
-      puertoSerial.open((err) => {
-        if (!err) {
-          lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
-          lecturaPuerto.on('data', onfncData);
-          return { ok: true, message: `PUERTO CAPTURADO ${portName}` };
-        } else {
-          return { ok: false, message: `PUERTO NO CAPTURADO ${portName}` };
-        }
-      });
-      retvalport = { ok: true, message: `ABRIENDO PUERTO ${portName}` };
-    }
+      // process.stdin.on('data', (datac) => {
+      //   console.log(datac);
+      // });
+    });
+
+    puertoSerial.on('error', (err) => {
+      console.log(`Hmm..., ${err.message}`);
+      process.exit(1);
+    });
+
+    puertoSerial.open((err) => {
+      if (!err) {
+        lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
+        lecturaPuerto.on('data', onfncData);
+        return { ok: true, message: `PUERTO CAPTURADO ${portName}` };
+      } else {
+        return { ok: false, message: `PUERTO NO CAPTURADO ${portName}` };
+      }
+    });
+
+    // if (!puertoSerial.isOpen) {
+    //   puertoSerial.on('open', (retval) => {});
+
+    //   puertoSerial.on('close', (retval) => {
+    //     lecturaPuerto.on('data', () => null);
+    //   });
+    //   retvalport = { ok: false, message: `ABRIENDO PUERTO ${portName}` };
+
+    //   puertoSerial.open((err) => {
+    //     if (!err) {
+    //       lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
+    //       lecturaPuerto.on('data', onfncData);
+    //       return { ok: true, message: `PUERTO CAPTURADO ${portName}` };
+    //     } else {
+    //       return { ok: false, message: `PUERTO NO CAPTURADO ${portName}` };
+    //     }
+    //   });
+    retvalport = { ok: true, message: `ABRIENDO PUERTO ${portName}` };
+    // }
   } catch (error) {
+    process.exit(1);
     retvalport = { ok: false, message: `Puerto CERRADO - Error ${error}` };
   }
   return retvalport;

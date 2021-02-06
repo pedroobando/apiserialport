@@ -1,17 +1,18 @@
 const { serve, thePort, puertoSerialExp } = require('./server');
 
 process.stdin.resume(); //so the program will not close instantly
+// process.stdin.exit(1);
 
 const exitHandler = (options, exitCode) => {
   try {
     if (options.cleanup) {
       console.log('clean');
-      puertoSerialExp().close((retval) => {
-        console.log(retval);
-      });
+      // puertoSerialExp().close((retval) => {
+      //   console.log(retval);
+      // });
     }
     if (exitCode || exitCode === 0) console.log(exitCode);
-    if (options.exit) process.exit();
+    if (options.exit) process.exit(1);
   } catch (error) {
     console.log(error);
   }

@@ -37,6 +37,7 @@ let _fechaTomaData = new Date();
 
 const onData = (data) => {
   try {
+    console.log(data);
     const dateNow = new Date();
     const dateString =
       ('0' + dateNow.getHours()).slice(-2) +
