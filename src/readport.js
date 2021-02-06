@@ -7,8 +7,6 @@ let valoresConfigJson = undefined;
 var puertoSerial = undefined; //new serialPort('COM1', { baudRate: 9600, autoOpen: false });
 var lecturaPuerto = undefined;
 
-const puertoSerialExp = () => puertoSerial;
-
 const openPort = async (onfncData) => {
   var retvalport = { ok: false, message: `Puerto CERRADO` };
   try {
@@ -47,8 +45,9 @@ const openPortNew = async (
       process.stdin.resume();
       process.stdin.setEncoding('utf-8');
 
-      // process.stdin.on('data', (datac) => {
-      //   console.log(datac);
+      // process.stdin.on('data', function (chunk) {
+      //   process.stdout.write('data: ' + chunk);
+      //   console.log(chunk, 'ola');
       // });
     });
 
@@ -57,13 +56,18 @@ const openPortNew = async (
       process.exit(1);
     });
 
+    puertoSerial.on('close', (retval) => {
+      console.log('close');
+      process.stdin.end();
+    });
+
     puertoSerial.open((err) => {
       if (!err) {
         lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
         lecturaPuerto.on('data', onfncData);
-        return { ok: true, message: `PUERTO CAPTURADO ${portName}` };
+        retvalport = { ok: true, message: `PUERTO CAPTURADO ${portName}` };
       } else {
-        return { ok: false, message: `PUERTO NO CAPTURADO ${portName}` };
+        retvalport = { ok: false, message: `PUERTO NO CAPTURADO ${portName}` };
       }
     });
 
@@ -84,17 +88,21 @@ const openPortNew = async (
     //       return { ok: false, message: `PUERTO NO CAPTURADO ${portName}` };
     //     }
     //   });
-    retvalport = { ok: true, message: `ABRIENDO PUERTO ${portName}` };
+    retvalport = {
+      ok: true,
+      message: `ABRIENDO PUERTO - portName=${portName} baudRate=${portBaudRate}`,
+    };
     // }
   } catch (error) {
-    process.exit(1);
     retvalport = { ok: false, message: `Puerto CERRADO - Error ${error}` };
+    process.exit(1);
   }
   return retvalport;
 };
 
 const closePort = () => {
   var retvalport = { ok: true, message: `PUERTO CERRADO` };
+
   try {
     puertoSerial !== undefined &&
       puertoSerial.close((retval) => {
@@ -125,7 +133,6 @@ const allBalanzaPort = () => {
 };
 
 module.exports = {
-  puertoSerialExp,
   allBalanzaPort,
   readingData,
   closePort,

@@ -6,7 +6,6 @@ const internalIp = require('internal-ip');
 const cors = require('cors');
 
 const {
-  puertoSerialExp,
   allBalanzaPort,
   readingData,
   openPort,
@@ -116,22 +115,6 @@ serve.get('/puertos', (req, res) => {
   }
 });
 
-// serve.post('/api/open', async (req, res) => {
-//   let resultPort = {};
-//   try {
-//     const { portName, baudRate } = req.body;
-
-//     if (portName !== undefined) {
-//       resultPort = await openPortNew(portName, parseInt(baudRate, 10), onData);
-//     } else {
-//       resultPort = await openPort(onData);
-//     }
-//     res.status(201).json(resultPort);
-//   } catch (error) {
-//     res.status(500).json({ statusOk: false, message: error });
-//   }
-// });
-
 serve.get('/api/open', async (req, res) => {
   var resultPort = {};
   try {
@@ -142,7 +125,7 @@ serve.get('/api/open', async (req, res) => {
     } else {
       resultPort = await openPort(onData);
     }
-    console.log(resultPort);
+    // console.log(resultPort);
     res.status(201).json(resultPort);
   } catch (error) {
     res.status(500).json({ statusOk: false, message: error });
@@ -169,4 +152,4 @@ serve.use(function (req, res, next) {
 
 // start();
 
-module.exports = { serve, thePort, puertoSerialExp };
+module.exports = { serve, thePort };
