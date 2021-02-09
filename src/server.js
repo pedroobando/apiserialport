@@ -146,10 +146,10 @@ serve.use(function (req, res, next) {
   res.status(404).send('Lo siento no encuentro la ruta..!');
 });
 
-// const start = async () => {
-//   await openPort(onData);
-// };
+const start = async () => {
+  await openPort(onData);
+};
 
-// start();
+start();
 
 module.exports = { serve, thePort };

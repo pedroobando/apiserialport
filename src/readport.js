@@ -28,7 +28,6 @@ const openPortNew = async (
 ) => {
   var retvalport = { ok: false, message: `PUERTO  - CERRADO` };
   try {
-    // retvalport = closePort();
     portBaudRate = parseInt(portBaudRate, 10);
     await settingData(portName, portBaudRate);
     puertoSerial = serialPort(portName, {
@@ -71,23 +70,6 @@ const openPortNew = async (
       }
     });
 
-    // if (!puertoSerial.isOpen) {
-    //   puertoSerial.on('open', (retval) => {});
-
-    //   puertoSerial.on('close', (retval) => {
-    //     lecturaPuerto.on('data', () => null);
-    //   });
-    //   retvalport = { ok: false, message: `ABRIENDO PUERTO ${portName}` };
-
-    //   puertoSerial.open((err) => {
-    //     if (!err) {
-    //       lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
-    //       lecturaPuerto.on('data', onfncData);
-    //       return { ok: true, message: `PUERTO CAPTURADO ${portName}` };
-    //     } else {
-    //       return { ok: false, message: `PUERTO NO CAPTURADO ${portName}` };
-    //     }
-    //   });
     retvalport = {
       ok: true,
       message: `ABRIENDO PUERTO - portName=${portName} baudRate=${portBaudRate}`,

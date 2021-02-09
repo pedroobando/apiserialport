@@ -2,7 +2,7 @@
 
 ## Description
 
-Aplicacion con el fin de leer el puerto serial (RS232) de una balanza, sus datos son capturados para luego ser mostrados en un servidor web mediante http, con el comando GET.
+Aplicacion con el fin de leer el puerto serial (RS232) de una balanza, sus datos son capturados para luego ser mostrados en un servidor web mediante http, con el comando GET. La aplicacion al montarse o subir a memoria, abre automaticame el puerto, con la ultima configuracion que le fue asignada.
 
 ## Cambio del puerto del servidor web
 
@@ -85,6 +85,14 @@ Todos los metodos son ejecutado, mediante el comando GET
   http://172.1.1.0:3010/api/close
 
   # Cierra automaticamente el puerto guardado o puerto activo si lo ubiese.
+```
+
+### Modo Web
+
+```bash
+  http://172.1.1.0:3010/
+
+  # Abre automanticamente en el explorador la pagina web, para cambiar la configuracion.
 ```
 
 ## Guia Docker
