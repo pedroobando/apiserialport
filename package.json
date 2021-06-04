@@ -5,8 +5,10 @@
   "license": "MIT",
   "author": "Pedro Obando & Tomás Ortega",
   "scripts": {
+    "build": "./node_modules/.bin/esbuild src/index.js --bundle --platform=node  --minify --outfile=./build/bundle.js",
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "go": "node ./build/bundle.js"
   },
   "config": {
     "porthttp": "3010"
@@ -25,6 +27,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "esbuild": "^0.12.6",
     "node-windows": "^1.0.0-beta.5",
     "nodemon": "^2.0.7"
   }
