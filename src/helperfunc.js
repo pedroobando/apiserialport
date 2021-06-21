@@ -2,7 +2,6 @@ const fs = require('fs-extra');
 
 const readDataConfig = async (fileConfig) => {
   try {
-    // const fileJson = fs.readJsonSync(fileConfig);
     const fileJson = await fs.readJson(fileConfig);
     return fileJson;
   } catch (error) {

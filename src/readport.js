@@ -43,11 +43,6 @@ const openPortNew = async (
 
       process.stdin.resume();
       process.stdin.setEncoding('utf-8');
-
-      // process.stdin.on('data', function (chunk) {
-      //   process.stdout.write('data: ' + chunk);
-      //   console.log(chunk, 'ola');
-      // });
     });
 
     puertoSerial.on('error', (err) => {
