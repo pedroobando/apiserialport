@@ -3,21 +3,26 @@
   "version": "0.2.1",
   "license": "MIT",
   "author": "Pedro Obando & Tomás Ortega",
-  "main": "src/index.js",
+  "main": "src/server.js",
   "scripts": {
     "dev": "nodemon .",
-    "start": "node ."
+    "start": "node .",
+    "build": "./node_modules/.bin/esbuild .  --bundle --platform=node --outdir=build",
+    "start:node": "node ./build/build.js",
+    "dev:x": "nodemon src/xserve.js",
+    "build:x": "./node_modules/.bin/esbuild src/xserve.js --platform=node --bundle --minify --outfile=./build/index.js",
+    "start:x": "node ./build/index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fs-extra": "^9.0.1",
-    "internal-ip": "^6.2.0",
     "serialport": "^9.0.4"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "esbuild": "^0.12.9",
     "nodemon": "^2.0.7"
   }
 }

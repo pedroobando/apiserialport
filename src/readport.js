@@ -69,7 +69,6 @@ const openPortNew = async (
       ok: true,
       message: `ABRIENDO PUERTO - portName=${portName} baudRate=${portBaudRate}`,
     };
-    // }
   } catch (error) {
     retvalport = { ok: false, message: `Puerto CERRADO - Error ${error}` };
     process.exit(1);

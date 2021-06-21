@@ -1,3 +1,5 @@
+'use strinct';
+
 const fs = require('fs-extra');
 
 const readDataConfig = async (fileConfig) => {
