@@ -89,7 +89,8 @@ serve.get('/api/portwrite', async (req, res) => {
 });
 
 serve.get('/api/ports', (req, res) => {
-  const iplocal = 'xxxxx';
+  const iplocal = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+
   try {
     const portAll = allBalanzaPort();
     portAll.then((item) => {
