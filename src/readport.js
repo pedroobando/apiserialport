@@ -8,7 +8,7 @@ var puertoSerial = undefined; //new serialPort('COM1', { baudRate: 9600, autoOpe
 var lecturaPuerto = undefined;
 
 const openPort = async (onfncData) => {
-  var retvalport = { ok: false, message: `Puerto CERRADO` };
+  var retvalport = { statusOk: false, message: `Puerto CERRADO` };
   try {
     const valoresConfigJson = await readDataConfig(nameFileConfig);
     const portBaudRate = parseInt(valoresConfigJson.BALANZABAUDIOS);
@@ -16,7 +16,7 @@ const openPort = async (onfncData) => {
     retvalport = await openPortNew(portName, portBaudRate, onfncData);
     // console.log(`retvalport ${retvalport}`);
   } catch (error) {
-    retvalport = { ok: false, message: `Puerto CERRADO - Error ${error}` };
+    retvalport = { statusOk: false, message: `Puerto CERRADO - Error ${error}` };
   }
   return retvalport;
 };
@@ -26,7 +26,7 @@ const openPortNew = async (
   portBaudRate = 9600,
   onfncData = () => {}
 ) => {
-  var retvalport = { ok: false, message: `PUERTO  - CERRADO` };
+  var retvalport = { statusOk: false, message: `PUERTO  - CERRADO` };
   try {
     portBaudRate = parseInt(portBaudRate, 10);
     await settingData(portName, portBaudRate);
@@ -59,9 +59,9 @@ const openPortNew = async (
       if (!err) {
         lecturaPuerto = puertoSerial.pipe(new readLineSerial({ delimiter: '\r\n' }));
         lecturaPuerto.on('data', onfncData);
-        retvalport = { ok: true, message: `PUERTO CAPTURADO ${portName}` };
+        retvalport = { statusOk: true, message: `PUERTO CAPTURADO ${portName}` };
       } else {
-        retvalport = { ok: false, message: `PUERTO NO CAPTURADO ${portName}` };
+        retvalport = { statusOk: false, message: `PUERTO NO CAPTURADO ${portName}` };
       }
     });
 
@@ -70,22 +70,22 @@ const openPortNew = async (
       message: `ABRIENDO PUERTO - portName=${portName} baudRate=${portBaudRate}`,
     };
   } catch (error) {
-    retvalport = { ok: false, message: `Puerto CERRADO - Error ${error}` };
+    retvalport = { statusOk: false, message: `Puerto CERRADO - Error ${error}` };
     process.exit(1);
   }
   return retvalport;
 };
 
 const closePort = () => {
-  var retvalport = { ok: true, message: `PUERTO CERRADO` };
+  var retvalport = { statusOk: true, message: `PUERTO CERRADO` };
 
   try {
     puertoSerial !== undefined &&
       puertoSerial.close((retval) => {
-        retvalport = { ok: !retval, message: `PUERTO CERRADO` };
+        retvalport = { statusOk: !retval, message: `PUERTO CERRADO` };
       });
   } catch (error) {
-    retvalport = { ok: false, message: `PUERTO NO CERRADO - Error ${Error}` };
+    retvalport = { statusOk: false, message: `PUERTO NO CERRADO - Error ${Error}` };
   }
   return retvalport;
 };

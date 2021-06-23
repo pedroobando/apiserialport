@@ -18,6 +18,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fs-extra": "^9.0.1",
+    "internal-ip": "^6.2.0",
     "serialport": "^9.0.4"
   },
   "devDependencies": {

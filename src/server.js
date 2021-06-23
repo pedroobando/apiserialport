@@ -3,6 +3,8 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const internalIp = require('internal-ip');
+const path = require('path');
 
 const { allBalanzaPort, openPort, openPortNew, closePort } = require('./readport');
 const { writeDataConfig } = require('./helperfunc');
@@ -88,8 +90,8 @@ serve.get('/api/portwrite', async (req, res) => {
   }
 });
 
-serve.get('/api/ports', (req, res) => {
-  const iplocal = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+serve.get('/api/ports', async (req, res) => {
+  const iplocal = await internalIp.v4();
 
   try {
     const portAll = allBalanzaPort();
@@ -121,11 +123,17 @@ serve.get('/api/open', async (req, res) => {
 serve.get('/api/close', (req, res) => {
   try {
     const resultPort = closePort();
-    console.log(resultPort);
+    // console.log(resultPort);
     res.status(201).json(resultPort);
   } catch (error) {
     res.status(500).json({ statusOk: false, message: error });
   }
+});
+
+serve.get('/', (req, res) => {
+  try {
+    res.status(200).sendFile(path.resolve(__dirname, 'main.html'));
+  } catch (error) {}
 });
 
 serve.use(function (req, res, next) {

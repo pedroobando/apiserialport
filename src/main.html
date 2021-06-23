@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h2>Control del Puerto Serial</h2>
+    <p>Comandos basicos, todo es controlado mediante peticiones GET al http</p>
+
+    <p>Abrir el puerto: <strong>http:</strong><a href="/api/open">/api/open</a></p>
+    <p>Leer datos: <strong>http:</strong><a href="/api/read">/api/read</a></p>
+    <p>Cerrar el puerto: <strong>http:</strong><a href="/api/close">/api/close</a></p>
+    <p>
+      Estatus de los puertos: <strong>http:</strong><a href="/api/ports">/api/ports</a>
+    </p>
+
+    <p>
+      Cambiar nombre del puerto y velocidad (baudios): <strong>http:</strong
+      ><a href="/api/portwrite?BALANZAPORTCOM=COM1&BALANZABAUDIOS=9600"
+        >/api/portwrite?BALANZAPORTCOM=COM1&BALANZABAUDIOS=9600</a
+      >
+    </p>
+  </body>
+</html>
