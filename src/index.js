@@ -69,23 +69,22 @@ serve.get('/api/portwrite', async (req, res) => {
   let statusOk = false;
   let codeStatus = 409;
 
-  const BALANZAPORTCOM = req.query.BALANZAPORTCOM;
-  const BALANZABAUDIOS = req.query.BALANZABAUDIOS;
+  const portname = req.query.portname;
+  const baudrate = req.query.baudrate;
 
-  console.log(BALANZAPORTCOM, BALANZABAUDIOS);
+  // console.log(portname, baudrate);
   let _noSendData = { message: 'data not found.' };
 
   try {
     await writeDataConfig('config.json', {
-      'BALANZAPORTCOM': BALANZAPORTCOM,
-      'BALANZABAUDIOS': BALANZABAUDIOS,
+      'BALANZAPORTCOM': portname,
+      'BALANZABAUDIOS': baudrate,
     });
     codeStatus = 200;
     statusOk = true;
-    res
-      .status(codeStatus)
-      .json({ statusOk, 'port': BALANZAPORTCOM, 'baudio': BALANZABAUDIOS });
+    res.status(codeStatus).json({ statusOk, 'portname': portname, 'baudrate': baudrate });
   } catch (error) {
+    console.log(error);
     res.status(codeStatus).json({ statusOk, ..._noSendData });
   }
 });

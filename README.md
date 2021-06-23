@@ -38,16 +38,6 @@ Nota: Mayor informacion de [PM2 en su apartado o documentacion](https://pm2.keym
 
 ## Salida Json o Metodos
 
-### Abrir un puerto especifico
-
-Todos los metodos son ejecutado, mediante el comando GET
-
-```bash
-  http://172.1.1.0:3010/api/open?portName=COM1&baudRate=9600
-
-  # Al abrir un puerto especifico este es guardado automaticamente y la proxima llamada del metodo, no hace falta especificarlo.
-```
-
 ### Abrir un puerto guardado
 
 ```bash
@@ -87,10 +77,20 @@ Todos los metodos son ejecutado, mediante el comando GET
   # Cierra automaticamente el puerto guardado o puerto activo si lo ubiese.
 ```
 
+### Abrir un puerto especifico
+
+Cambia la configuracion de nombre y velocidad del puerto, mediante el comando GET
+
+```bash
+  http://172.1.1.0:3010/api/portwrite?portname=COM1&baudrate=9600
+
+  # Al abrir un puerto especifico este es guardado automaticamente y la proxima llamada del metodo, no hace falta especificarlo.
+```
+
 ### Modo Web
 
 ```bash
-  http://172.1.1.0:3010/
+  http://[IPAdress]:3010/
 
   # Abre automanticamente en el explorador la pagina web, para cambiar la configuracion.
 ```

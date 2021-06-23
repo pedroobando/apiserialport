@@ -3,14 +3,12 @@
   "version": "0.2.1",
   "license": "MIT",
   "author": "Pedro Obando & Tomás Ortega",
-  "main": "src/server.js",
+  "main": "src/index.js",
   "scripts": {
     "dev": "nodemon .",
     "start": "node .",
     "build": "./node_modules/.bin/esbuild .  --bundle --platform=node --outdir=build",
     "start:node": "node ./build/build.js",
-    "dev:x": "nodemon src/xserve.js",
-    "build:x": "./node_modules/.bin/esbuild src/xserve.js --platform=node --bundle --minify --outfile=./build/index.js",
     "start:x": "node ./build/index.js"
   },
   "dependencies": {
