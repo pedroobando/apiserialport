@@ -77,7 +77,7 @@ Nota: Mayor informacion de [PM2 en su apartado o documentacion](https://pm2.keym
   # Cierra automaticamente el puerto guardado o puerto activo si lo ubiese.
 ```
 
-### Abrir un puerto especifico
+### Cambiar un puerto especifico y velocidad de tranmision
 
 Cambia la configuracion de nombre y velocidad del puerto, mediante el comando GET
 
@@ -85,6 +85,9 @@ Cambia la configuracion de nombre y velocidad del puerto, mediante el comando GE
   http://172.1.1.0:3010/api/portwrite?portname=COM1&baudrate=9600
 
   # Al abrir un puerto especifico este es guardado automaticamente y la proxima llamada del metodo, no hace falta especificarlo.
+
+  # Esto afectara al archivo config.json
+  {"BALANZAPORTCOM":"COM1","BALANZABAUDIOS":9600}
 ```
 
 ### Modo Web
